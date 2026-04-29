@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SkillBridge – Exchange Skills, Build Community</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -21,16 +21,23 @@
     --glow: 0 0 40px rgba(124,106,255,0.25);
   }
 
-  html { scroll-behavior: smooth; font-size: 15px; }
+  html {
+    scroll-behavior: smooth;
+    font-size: 15px;
+    /* Prevent horizontal scroll on mobile */
+    overflow-x: hidden;
+  }
 
   body {
     font-family: 'Outfit', sans-serif;
     background: var(--bg);
     color: var(--text);
+    /* Fix: constrain to viewport width */
+    width: 100%;
+    max-width: 100vw;
     overflow-x: hidden;
     line-height: 1.6;
     letter-spacing: 0.01em;
-    width: 100%;
   }
 
   /* NOISE TEXTURE */
@@ -55,7 +62,11 @@
     padding: 1rem 5%;
     background: rgba(10,10,15,0.7);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
+    /* Fix: ensure nav doesn't overflow */
+    width: 100%;
+    max-width: 100vw;
   }
 
   .logo {
@@ -68,6 +79,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
   }
 
   .logo-dot {
@@ -76,6 +88,7 @@
     background: var(--accent);
     box-shadow: 0 0 12px var(--accent);
     animation: pulse 2s infinite;
+    flex-shrink: 0;
   }
 
   @keyframes pulse {
@@ -96,14 +109,16 @@
     font-size: 0.85rem;
     font-weight: 500;
     transition: color 0.2s;
+    white-space: nowrap;
   }
 
   .nav-links a:hover { color: var(--text); }
 
   .nav-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.6rem;
     align-items: center;
+    flex-shrink: 0;
   }
 
   .btn-ghost {
@@ -117,6 +132,7 @@
     font-family: 'Outfit', sans-serif;
     transition: all 0.2s;
     text-decoration: none;
+    white-space: nowrap;
   }
 
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
@@ -134,6 +150,7 @@
     transition: all 0.2s;
     text-decoration: none;
     box-shadow: 0 0 20px rgba(124,106,255,0.3);
+    white-space: nowrap;
   }
 
   .btn-primary:hover {
@@ -142,16 +159,76 @@
     transform: translateY(-1px);
   }
 
+  /* Hamburger menu (mobile only) */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* Mobile slide-down nav menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 57px; left: 0; right: 0;
+    background: rgba(10,10,15,0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1.5rem 1.5rem;
+    z-index: 99;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a:hover { color: var(--text); }
+
+  .mobile-menu-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.2rem;
+  }
+
+  .mobile-menu-actions a { flex: 1; text-align: center; }
+
   /* HERO */
   .hero {
-    min-height: 100vh;
+    min-height: 100svh; /* use svh for mobile (excludes browser chrome) */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 8rem 2rem 4rem;
+    padding: 8rem 1.5rem 4rem;
     position: relative;
+    /* Fix: prevent orbs from causing overflow */
+    overflow: hidden;
   }
 
   .hero-orb {
@@ -203,17 +280,23 @@
     margin-bottom: 2rem;
     letter-spacing: 0.04em;
     animation: fadeUp 0.6s ease both;
+    position: relative;
+    z-index: 1;
+    /* Fix: wrap on very small screens */
+    text-align: center;
   }
 
   .hero h1 {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    font-size: clamp(2.4rem, 9vw, 5.5rem);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.04em;
     margin-bottom: 1.5rem;
     animation: fadeUp 0.8s ease 0.1s both;
     max-width: 900px;
+    position: relative;
+    z-index: 1;
   }
 
   .hero h1 .gradient-text {
@@ -230,6 +313,9 @@
     margin-bottom: 2.2rem;
     animation: fadeUp 0.8s ease 0.2s both;
     font-weight: 300;
+    position: relative;
+    z-index: 1;
+    padding: 0 0.5rem;
   }
 
   .hero-actions {
@@ -239,6 +325,11 @@
     animation: fadeUp 0.8s ease 0.3s both;
     flex-wrap: wrap;
     justify-content: center;
+    position: relative;
+    z-index: 1;
+    /* Fix: full-width buttons on tiny screens */
+    width: 100%;
+    max-width: 400px;
   }
 
   .btn-large {
@@ -259,16 +350,19 @@
     font-family: 'Outfit', sans-serif;
     transition: all 0.2s;
     text-decoration: none;
+    white-space: nowrap;
   }
 
   .btn-outline-large:hover { border-color: var(--accent); background: rgba(124,106,255,0.08); }
 
   .stats-row {
     display: flex;
-    gap: 4rem;
+    gap: 2.5rem;
     animation: fadeUp 0.8s ease 0.4s both;
     flex-wrap: wrap;
     justify-content: center;
+    position: relative;
+    z-index: 1;
   }
 
   .stat { text-align: center; }
@@ -301,7 +395,7 @@
 
   .section-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
     font-weight: 700;
     line-height: 1.15;
     margin-bottom: 1.2rem;
@@ -544,6 +638,7 @@
     font-weight: 700;
     color: white;
     font-family: 'Syne', sans-serif;
+    flex-shrink: 0;
   }
 
   .skill-card h4 {
@@ -594,7 +689,7 @@
 
   .cta-section h2 {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-size: clamp(2rem, 6vw, 5rem);
     font-weight: 800;
     position: relative;
     z-index: 1;
@@ -666,6 +761,8 @@
     margin: 0 auto;
     color: var(--muted);
     font-size: 0.82rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .max-container {
@@ -673,15 +770,130 @@
     margin: 0 auto;
   }
 
+  /* =============================================
+     MOBILE STYLES — fixes for phones
+     ============================================= */
   @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
+
+    /* Nav */
+    nav {
+      padding: 0.9rem 1.2rem;
+    }
+
     .nav-links { display: none; }
-    section { padding: 4rem 1.5rem; }
-    .how-grid { grid-template-columns: 1fr; }
-    .features-grid { grid-template-columns: 1fr; }
-    .cards-scroll { grid-template-columns: repeat(2, 1fr); }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-    .marketplace-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+
+    /* Show hamburger, hide desktop login button */
+    .hamburger { display: flex; }
+    .nav-actions .btn-ghost { display: none; }
+    .nav-actions .btn-primary { 
+      padding: 0.45rem 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    /* Hero — full screen on mobile */
+    .hero {
+      min-height: 100svh;
+      padding: 6.5rem 1.2rem 3rem;
+    }
+
+    /* Shrink orbs so they don't cause layout issues */
+    .orb1 { width: 260px; height: 260px; left: -40px; }
+    .orb2 { width: 220px; height: 220px; right: -40px; top: 15%; }
+    .orb3 { width: 200px; height: 200px; left: 10%; bottom: 5%; }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+    }
+
+    .hero p { font-size: 0.97rem; padding: 0; }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+      max-width: 100%;
+      gap: 0.75rem;
+    }
+
+    .hero-actions a {
+      text-align: center;
+    }
+
+    .btn-large, .btn-outline-large {
+      padding: 0.85rem 1.5rem;
+      font-size: 0.97rem;
+    }
+
+    .stats-row {
+      gap: 1.5rem;
+    }
+
+    .stat-num { font-size: 1.5rem; }
+
+    /* Sections */
+    section { padding: 3.5rem 1.2rem; }
+
+    /* How It Works */
+    .how-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .visual-card { padding: 1.4rem; }
+    .credit-value { font-size: 1.8rem; }
+
+    /* Features */
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .feature-card { padding: 1.5rem; }
+
+    /* Marketplace */
+    .marketplace-header {
+      flex-direction: column;
+      gap: 0.8rem;
+      align-items: flex-start;
+    }
+
+    .cards-scroll {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+
+    .skill-card { padding: 1.1rem; }
+    .skill-card h4 { font-size: 0.85rem; }
+    .skill-card .skill-name { font-size: 0.75rem; }
+
+    /* CTA */
+    .cta-section { padding: 4rem 1.2rem; }
+    .cta-btn-wrap { flex-direction: column; align-items: stretch; max-width: 320px; margin: 0 auto; }
+    .cta-btn-wrap a { text-align: center; }
+
+    /* Footer */
+    footer { padding: 2.5rem 1.2rem; }
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .footer-brand { grid-column: 1 / -1; }
+    .footer-brand p { max-width: 100%; }
+
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  /* Extra small screens (< 380px) */
+  @media (max-width: 380px) {
+    .hero h1 { font-size: 2.1rem; }
+    .cards-scroll { grid-template-columns: 1fr; }
+    .stats-row { gap: 1.2rem; }
+    .stat-num { font-size: 1.3rem; }
+    .footer-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -702,8 +914,24 @@
   <div class="nav-actions">
     <a href="login.html" class="btn-ghost">Log In</a>
     <a href="signup.html" class="btn-primary">Get Started</a>
+    <!-- Hamburger (mobile) -->
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile slide-down menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="marketplace.html">Marketplace</a>
+  <a href="how-it-works.html">How it Works</a>
+  <a href="community.html">Community</a>
+  <a href="about.html">About</a>
+  <div class="mobile-menu-actions">
+    <a href="login.html" class="btn-ghost" style="flex:1;text-align:center;">Log In</a>
+    <a href="signup.html" class="btn-primary" style="flex:1;text-align:center;">Get Started</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -955,5 +1183,19 @@
 </footer>
 
 <script src="core.js"></script>
+<script>
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+  });
+
+  // Close menu on link click
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+  });
+</script>
 </body>
 </html>
