@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge – About Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #12121a; --surface2: #1c1c28;
+    --accent: #7c6aff; --accent2: #ff6a8a; --accent3: #6affca;
+    --text: #f0eeff; --muted: #7a7a9a; --border: rgba(124,106,255,0.18);
+  }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; width: 100%; overflow-x: hidden; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)} }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 5%; background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .nav-actions { display: flex; gap: 1rem; align-items: center; }
+  .btn-ghost { color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: #9580ff; }
+
+  /* HERO */
+  .hero { padding: 9rem 4rem 5rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 50% 30%, rgba(124,106,255,0.15) 0%, transparent 70%); pointer-events: none; }
+  .hero .tag { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(124,106,255,0.1); border: 1px solid rgba(124,106,255,0.25); color: var(--accent); padding: 0.35rem 0.9rem; border-radius: 100px; font-size: 0.8rem; margin-bottom: 1.5rem; animation: fadeUp 0.6s ease both; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.8rem, 6vw, 5.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; animation: fadeUp 0.7s ease 0.1s both; }
+  .hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--accent), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { color: var(--muted); font-size: 1.15rem; max-width: 580px; margin: 0 auto; animation: fadeUp 0.7s ease 0.2s both; font-weight: 300; }
+
+  /* MISSION */
+  .mission { padding: 4rem 5%; background: var(--surface); }
+  .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1100px; margin: 0 auto; }
+  .mission h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; line-height: 1.15; margin-bottom: 1.2rem; }
+  .mission p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1rem; }
+  .mission-values { display: flex; flex-direction: column; gap: 1.2rem; }
+  .value-item { display: flex; gap: 1rem; align-items: flex-start; }
+  .value-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(124,106,255,0.12); border: 1px solid rgba(124,106,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+  .value-content h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .value-content p { color: var(--muted); font-size: 0.85rem; margin: 0; line-height: 1.6; }
+
+  /* STATS */
+  .impact { padding: 4rem 5%; text-align: center; }
+  .impact h2 { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; margin-bottom: 0.8rem; }
+  .impact p { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
+  .impact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+  .impact-stat { padding: 2rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; transition: all 0.3s; }
+  .impact-stat:hover { border-color: rgba(124,106,255,0.4); transform: translateY(-4px); }
+  .impact-num { font-family: 'Syne', sans-serif; font-size: 2.8rem; font-weight: 800; }
+  .impact-num.purple { color: var(--accent); }
+  .impact-num.teal { color: var(--accent3); }
+  .impact-num.pink { color: var(--accent2); }
+  .impact-num.gold { color: #ffd700; }
+  .impact-stat p { color: var(--muted); font-size: 0.85rem; margin: 0.4rem 0 0; }
+
+  /* PROBLEM / SOLUTION */
+  .problem-solution { padding: 5rem 4rem; background: var(--surface); }
+  .ps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1100px; margin: 2.5rem auto 0; }
+  .ps-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; }
+  .ps-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .ps-card ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .ps-card ul li { display: flex; align-items: flex-start; gap: 0.7rem; color: var(--muted); font-size: 0.9rem; }
+  .ps-card ul li::before { content: ''; flex-shrink: 0; margin-top: 6px; }
+  .problem-li::before { content: '✗'; color: var(--accent2); font-weight: 700; margin-top: 0 !important; }
+  .solution-li::before { content: '✓'; color: var(--accent3); font-weight: 700; margin-top: 0 !important; }
+
+  /* TEAM */
+  .team { padding: 5rem 4rem; text-align: center; }
+  .team h2 { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.8rem; }
+  .team p.desc { color: var(--muted); margin-bottom: 3rem; font-size: 1rem; }
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 1000px; margin: 0 auto; }
+  .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem 1.2rem; text-align: center; transition: all 0.3s; }
+  .team-card:hover { border-color: rgba(124,106,255,0.4); transform: translateY(-4px); }
+  .team-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: white; }
+  .team-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .team-role { font-size: 0.78rem; color: var(--accent); font-weight: 500; margin-bottom: 0.6rem; }
+  .team-bio { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta { padding: 7rem 4rem; text-align: center; position: relative; overflow: hidden; }
+  .cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50%, rgba(124,106,255,0.12), transparent 70%); }
+  .cta h2 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; margin-bottom: 1rem; position: relative; }
+  .cta p { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; position: relative; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; position: relative; flex-wrap: wrap; }
+  .btn-lg { padding: 0.9rem 2.2rem; font-size: 1rem; border-radius: 10px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-outline-lg { background: none; border: 1px solid var(--border); color: var(--text); }
+  .btn-outline-lg:hover { border-color: var(--accent); background: rgba(124,106,255,0.08); }
+
+  /* FOOTER */
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 2rem 4rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;} .nav-links{display:none;}
+    .hero,.mission,.impact,.problem-solution,.team,.cta{padding-left:1.5rem;padding-right:1.5rem;}
+    .mission-grid,.ps-grid{grid-template-columns:1fr;}
+    .impact-grid{grid-template-columns:repeat(2,1fr);}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>SkillBridge</a>
+  <ul class="nav-links">
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="how-it-works.html">How it Works</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="signup.html" class="btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">🌱 Our Story</div>
+  <h1>We Believe Skills Are<br>the <em>Real Currency</em></h1>
+  <p>SkillBridge was born from a simple idea — everyone has something valuable to teach. We built the platform to make sharing skills as easy as sending a message.</p>
+</section>
+
+<!-- MISSION -->
+<section class="mission">
+  <div class="mission-grid">
+    <div>
+      <h2>Our Mission Is to Unlock Human Potential</h2>
+      <p>Too many talented people go unrecognized because they can't afford to showcase their skills or access quality learning. We built SkillBridge to fix that — one exchange at a time.</p>
+      <p>We envision a world where a student in Bhimavaram can learn graphic design from a professional in Mumbai, and teach them Telugu in return. No money. Just trust, skills, and community.</p>
+    </div>
+    <div class="mission-values">
+      <div class="value-item">
+        <div class="value-icon">🤝</div>
+        <div class="value-content">
+          <h4>Community First</h4>
+          <p>Every feature is designed to strengthen human connections, not replace them.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">⚖️</div>
+        <div class="value-content">
+          <h4>Radical Fairness</h4>
+          <p>Skills are equal regardless of who holds them. A farmer's wisdom is as valuable as an engineer's.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🔓</div>
+        <div class="value-content">
+          <h4>Access for All</h4>
+          <p>Learning should never be gated by income. Credits replace cash — forever.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🛡️</div>
+        <div class="value-content">
+          <h4>Trust & Safety</h4>
+          <p>Verified profiles, peer reviews, and community moderation keep everyone protected.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT STATS -->
+<section class="impact">
+  <h2>Our Growing Impact</h2>
+  <p>Real people, real exchanges, real growth — across India and beyond.</p>
+  <div class="impact-grid">
+    <div class="impact-stat">
+      <div class="impact-num purple">12,400+</div>
+      <p>Active Members</p>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num teal">28,000+</div>
+      <p>Skill Exchanges</p>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num pink">380+</div>
+      <p>Skill Categories</p>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-num gold">₹2.4Cr+</div>
+      <p>Value Exchanged (Est.)</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM / SOLUTION -->
+<section class="problem-solution">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center">
+      <span style="font-size:0.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)">Why We Built This</span>
+      <h2 style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;margin-top:0.5rem">The Problem We're Solving</h2>
+    </div>
+    <div class="ps-grid">
+      <div class="ps-card">
+        <h3>❌ Before SkillBridge</h3>
+        <ul>
+          <li class="problem-li">Skills wasted because there's no platform to share them locally</li>
+          <li class="problem-li">Students pay large fees for tutoring they can't afford</li>
+          <li class="problem-li">Freelancers can't build portfolios without clients</li>
+          <li class="problem-li">Talented workers go unrecognized in their communities</li>
+          <li class="problem-li">No trusted way to exchange services without money</li>
+          <li class="problem-li">Communities lose connection and resilience</li>
+        </ul>
+      </div>
+      <div class="ps-card">
+        <h3 style="color:var(--accent3)">✅ With SkillBridge</h3>
+        <ul>
+          <li class="solution-li">Every skill is listed, discoverable, and valuable</li>
+          <li class="solution-li">Credits replace money — learn without paying cash</li>
+          <li class="solution-li">Freelancers get real experience and portfolio-worthy sessions</li>
+          <li class="solution-li">Verified profiles and ratings build recognition</li>
+          <li class="solution-li">Safe, structured framework for skill exchange</li>
+          <li class="solution-li">Communities become self-sustaining learning ecosystems</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <h2>Meet the Team</h2>
+  <p class="desc">Built by people who believe in the power of community learning.</p>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#7c6aff,#ff6a8a)">V</div>
+      <div class="team-name">Vikram Rao</div>
+      <div class="team-role">Founder & CEO</div>
+      <div class="team-bio">Former educator. Saw students unable to access skills they needed. Built SkillBridge to fix it.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#6affca,#7c6aff)">P</div>
+      <div class="team-name">Priyanka Singh</div>
+      <div class="team-role">CTO & Co-Founder</div>
+      <div class="team-bio">Full-stack engineer & open-source contributor. Obsessed with community-driven products.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#ff6a8a,#ff9a6a)">A</div>
+      <div class="team-name">Ayesha Khan</div>
+      <div class="team-role">Head of Community</div>
+      <div class="team-bio">Social entrepreneur. Runs grassroots skill programs across Tier 2 cities in India.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar" style="background:linear-gradient(135deg,#ffd700,#ff9a6a)">R</div>
+      <div class="team-name">Rahul Verma</div>
+      <div class="team-role">Design Lead</div>
+      <div class="team-bio">Product designer obsessed with accessible, inclusive interfaces that anyone can use.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Ready to Join the Movement?</h2>
+  <p>Start with 50 free SkillCredits. No credit card. No catch.</p>
+  <div class="cta-btns">
+    <a href="signup.html" class="btn-primary btn-lg">Create Free Account</a>
+    <a href="marketplace.html" class="btn-outline-lg btn-lg">Explore Skills</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 SkillBridge. Built with ♥ for communities everywhere. | <a href="index.html" style="color:var(--accent);text-decoration:none;">Home</a> · <a href="marketplace.html" style="color:var(--accent);text-decoration:none;">Marketplace</a> · <a href="signup.html" style="color:var(--accent);text-decoration:none;">Sign Up</a></p>
+</footer>
+
+</body>
+</html>

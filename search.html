@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Search Skills – SkillBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--card:#1e2230;--border:#2a2f40;--accent:#00e5a0;--accent2:#7b61ff;--text:#e8eaf0;--muted:#7a7f94;--danger:#ff4d6d;--gold:#ffd166;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;width:100%;}
+a{text-decoration:none;color:inherit;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:12px 5%;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;}.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;}.nav-links a{font-size:.85rem;color:var(--muted);}.nav-links a:hover{color:var(--text);}
+.nav-btn{background:var(--accent);color:#0d0f14;padding:8px 18px;border-radius:8px;font-weight:600;font-size:.82rem;}
+
+/* HERO SEARCH */
+.search-hero{background:linear-gradient(135deg,rgba(123,97,255,.18),rgba(0,229,160,.1));border-bottom:1px solid var(--border);padding:40px 40px 32px;}
+.search-hero h1{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:6px;}
+.search-hero p{color:var(--muted);font-size:.85rem;margin-bottom:18px;}
+.search-main{display:flex;gap:12px;max-width:800px;}
+.search-box{flex:1;display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;transition:border-color .2s;}
+.search-box:focus-within{border-color:var(--accent);}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:.92rem;flex:1;font-family:'DM Sans',sans-serif;}
+.search-box input::placeholder{color:var(--muted);}
+.loc-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;width:200px;transition:border-color .2s;}
+.loc-box:focus-within{border-color:var(--accent);}
+.loc-box input{background:none;border:none;outline:none;color:var(--text);font-size:.9rem;width:100%;font-family:'DM Sans',sans-serif;}
+.search-btn{background:var(--accent);color:#0d0f14;border:none;border-radius:12px;padding:10px 24px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;white-space:nowrap;transition:opacity .2s;}.search-btn:hover{opacity:.85;}
+
+/* FILTER TAGS */
+.filter-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.ftag{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:.8rem;cursor:pointer;color:var(--muted);transition:all .2s;}
+.ftag:hover{border-color:var(--accent);color:var(--accent);}
+.ftag.active{border-color:var(--accent);background:rgba(0,229,160,.1);color:var(--accent);font-weight:600;}
+
+/* LAYOUT */
+.search-layout{max-width:1200px;margin:0 auto;padding:28px 24px 60px;display:grid;grid-template-columns:250px 1fr;gap:24px;}
+@media(max-width:900px){.search-layout{grid-template-columns:1fr;}}
+
+/* FILTERS PANEL */
+.filter-panel{position:sticky;top:80px;height:fit-content;}
+.filter-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.filter-section h3{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.filter-option{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:.85rem;cursor:pointer;}
+.filter-option input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;}
+.filter-count{margin-left:auto;font-size:.75rem;color:var(--muted);}
+.range-wrap{padding:4px 0;}
+.range-input{width:100%;-webkit-appearance:none;height:3px;border-radius:3px;background:linear-gradient(to right,var(--accent) 0%,var(--accent) 60%,var(--border) 60%);outline:none;margin:10px 0;}
+.range-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.range-labels{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);}
+.clear-btn{width:100%;padding:10px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:.82rem;cursor:pointer;margin-top:4px;transition:all .2s;font-family:'DM Sans',sans-serif;}.clear-btn:hover{border-color:var(--danger);color:var(--danger);}
+
+/* RESULTS */
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.results-count{font-size:.9rem;color:var(--muted);}<br/>.results-count strong{color:var(--text);}
+.sort-select{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.85rem;outline:none;font-family:'DM Sans',sans-serif;}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;}
+
+/* SKILL CARD */
+.skill-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .25s,transform .25s;cursor:pointer;}
+.skill-card:hover{border-color:var(--accent);transform:translateY(-3px);}
+.card-accent{height:4px;}
+.card-body{padding:18px;}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.category-badge{font-size:.72rem;font-weight:600;padding:3px 10px;border-radius:12px;}
+.cat-tech{background:rgba(0,229,160,.12);color:var(--accent);}
+.cat-design{background:rgba(123,97,255,.12);color:var(--accent2);}
+.cat-edu{background:rgba(255,209,102,.12);color:var(--gold);}
+.cat-lang{background:rgba(255,77,109,.12);color:var(--danger);}
+.cat-music{background:rgba(255,209,102,.1);color:var(--gold);}
+.mode-tag{font-size:.7rem;color:var(--muted);background:var(--surface);padding:3px 8px;border-radius:6px;}
+.skill-card h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.3;}
+.skill-card p{font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:14px;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);}
+.provider{display:flex;align-items:center;gap:8px;}
+.prov-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.7rem;}
+.prov-name{font-size:.78rem;font-weight:500;}
+.prov-rating{font-size:.75rem;color:var(--gold);}
+.price-tag{background:rgba(123,97,255,.15);color:var(--accent2);font-size:.78rem;font-weight:700;padding:5px 10px;border-radius:7px;}
+
+/* NO RESULTS */
+.no-results{text-align:center;padding:80px 20px;color:var(--muted);}
+.no-results .emoji{font-size:3rem;margin-bottom:16px;}
+.no-results h3{font-family:'Syne',sans-serif;font-size:1.3rem;color:var(--text);margin-bottom:8px;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Skill<span>Bridge</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="marketplace.html">Marketplace</a>
+    <a href="community.html">Community</a><a href="dashboard.html">Dashboard</a>
+  </div>
+  <a href="post-skill.html" class="nav-btn">+ Post Skill</a>
+</nav>
+
+<div class="search-hero">
+  <h1>Find Your Perfect Skill</h1>
+  <p>Browse 500+ skills offered by your community</p>
+  <div class="search-main">
+    <div class="search-box">
+      <span style="color:var(--muted);font-size:1.1rem;">🔍</span>
+      <input id="searchInput" placeholder="Search skills, topics, people..." oninput="filterCards()"/>
+    </div>
+    <div class="loc-box">
+      <span style="color:var(--muted);">📍</span>
+      <input placeholder="Location..."/>
+    </div>
+    <button class="search-btn" onclick="filterCards()">Search</button>
+  </div>
+  <div class="filter-tags">
+    <div class="ftag active" onclick="setCat(this,'all')">All</div>
+    <div class="ftag" onclick="setCat(this,'tech')">💻 Technology</div>
+    <div class="ftag" onclick="setCat(this,'design')">🎨 Design</div>
+    <div class="ftag" onclick="setCat(this,'edu')">📚 Education</div>
+    <div class="ftag" onclick="setCat(this,'lang')">🌍 Languages</div>
+    <div class="ftag" onclick="setCat(this,'music')">🎵 Music</div>
+  </div>
+</div>
+
+<div class="search-layout">
+  <!-- FILTERS -->
+  <div class="filter-panel">
+    <div class="filter-section">
+      <h3>Delivery Mode</h3>
+      <label class="filter-option"><input type="checkbox" checked onchange="filterCards()"/>Online<span class="filter-count">312</span></label>
+      <label class="filter-option"><input type="checkbox" checked onchange="filterCards()"/>In-Person<span class="filter-count">188</span></label>
+    </div>
+    <div class="filter-section">
+      <h3>Credits / Hour</h3>
+      <div class="range-wrap">
+        <input type="range" class="range-input" min="1" max="50" value="30" id="priceRange" oninput="document.getElementById('priceVal').textContent='1–'+this.value+' credits'"/>
+        <div class="range-labels"><span id="priceVal">1–30 credits</span></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <h3>Rating</h3>
+      <label class="filter-option"><input type="checkbox"/>★★★★★ Only<span class="filter-count">87</span></label>
+      <label class="filter-option"><input type="checkbox" checked/>★★★★+ &amp; above<span class="filter-count">234</span></label>
+      <label class="filter-option"><input type="checkbox"/>Any rating<span class="filter-count">500</span></label>
+    </div>
+    <div class="filter-section">
+      <h3>Availability</h3>
+      <label class="filter-option"><input type="checkbox"/>Weekdays</label>
+      <label class="filter-option"><input type="checkbox" checked/>Weekends</label>
+      <label class="filter-option"><input type="checkbox"/>Evenings</label>
+    </div>
+    <button class="clear-btn" onclick="clearFilters()">✕ Clear All Filters</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div>
+    <div class="results-header">
+      <div class="results-count"><strong id="resultCount">12</strong> skills found</div>
+      <select class="sort-select" onchange="filterCards()">
+        <option>Most Relevant</option>
+        <option>Highest Rated</option>
+        <option>Lowest Credits</option>
+        <option>Most Reviews</option>
+        <option>Newest</option>
+      </select>
+    </div>
+
+    <div class="results-grid" id="resultsGrid">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+const skills=[
+  {cat:'tech',title:'React & Next.js Development',desc:'Build modern web apps with React hooks, SSR, and Vercel deployment.',credits:15,rating:4.9,reviews:18,name:'Arjun R.',av:'AR',avColor:'linear-gradient(135deg,#7b61ff,#00e5a0)',mode:'Online',accentColor:'#00e5a0'},
+  {cat:'design',title:'UI/UX Design with Figma',desc:'Wireframes, prototypes, and polished design systems for your product.',credits:12,rating:4.8,reviews:10,name:'Meera K.',av:'MK',avColor:'linear-gradient(135deg,#7b61ff,#ff4d6d)',mode:'Online',accentColor:'#7b61ff'},
+  {cat:'lang',title:'French Language Tutoring',desc:'Learn conversational French from a native speaker. Beginner to advanced.',credits:10,rating:5.0,reviews:22,name:'Priya S.',av:'PS',avColor:'linear-gradient(135deg,#00e5a0,#7b61ff)',mode:'Both',accentColor:'#ff4d6d'},
+  {cat:'edu',title:'Python for Beginners',desc:'Learn Python from scratch — variables, loops, OOP, and mini projects.',credits:8,rating:5.0,reviews:7,name:'Arjun R.',av:'AR',avColor:'linear-gradient(135deg,#7b61ff,#00e5a0)',mode:'Online',accentColor:'#00e5a0'},
+  {cat:'music',title:'Guitar for Beginners',desc:'Acoustic guitar basics — chords, strumming patterns, and your first songs.',credits:6,rating:4.7,reviews:14,name:'Ravi T.',av:'RT',avColor:'linear-gradient(135deg,#ffd166,#ff4d6d)',mode:'In-Person',accentColor:'#ffd166'},
+  {cat:'design',title:'Logo & Brand Identity',desc:'Professional logo design, color palettes, and brand guidelines in Illustrator.',credits:18,rating:4.9,reviews:31,name:'Sneha R.',av:'SR',avColor:'linear-gradient(135deg,#ff4d6d,#7b61ff)',mode:'Online',accentColor:'#7b61ff'},
+  {cat:'tech',title:'Node.js & REST APIs',desc:'Build scalable backend services with Express.js, MongoDB, and JWT auth.',credits:14,rating:4.9,reviews:9,name:'Arjun R.',av:'AR',avColor:'linear-gradient(135deg,#7b61ff,#00e5a0)',mode:'Online',accentColor:'#00e5a0'},
+  {cat:'lang',title:'Japanese for Beginners',desc:'Learn hiragana, katakana, and basic conversational phrases with fun methods.',credits:9,rating:4.8,reviews:6,name:'Ayesha N.',av:'AN',avColor:'linear-gradient(135deg,#ff4d6d,#ffd166)',mode:'Online',accentColor:'#ff4d6d'},
+  {cat:'edu',title:'Mathematics Tutoring (10th–12th)',desc:'Algebra, trigonometry, calculus — concept clarity and exam preparation.',credits:7,rating:4.9,reviews:38,name:'Kiran P.',av:'KP',avColor:'linear-gradient(135deg,#00e5a0,#ffd166)',mode:'Both',accentColor:'#ffd166'},
+  {cat:'tech',title:'Machine Learning Basics',desc:'Intro to ML with Python — linear regression, classification, and scikit-learn.',credits:20,rating:4.7,reviews:5,name:'Dev M.',av:'DM',avColor:'linear-gradient(135deg,#7b61ff,#ff4d6d)',mode:'Online',accentColor:'#00e5a0'},
+  {cat:'design',title:'Video Editing with DaVinci',desc:'Edit, color grade, and export professional videos using DaVinci Resolve.',credits:11,rating:4.6,reviews:12,name:'Raj V.',av:'RV',avColor:'linear-gradient(135deg,#ffd166,#7b61ff)',mode:'Online',accentColor:'#7b61ff'},
+  {cat:'music',title:'Music Production – FL Studio',desc:'Beat making, mixing, and mastering for hip-hop and EDM in FL Studio.',credits:13,rating:4.8,reviews:8,name:'Aakash S.',av:'AS',avColor:'linear-gradient(135deg,#ff4d6d,#ffd166)',mode:'Online',accentColor:'#ffd166'},
+];
+
+const catClassMap={tech:'cat-tech',design:'cat-design',edu:'cat-edu',lang:'cat-lang',music:'cat-music'};
+const catLabelMap={tech:'💻 Technology',design:'🎨 Design',edu:'📚 Education',lang:'🌍 Languages',music:'🎵 Music'};
+
+let currentCat='all';
+
+function renderCards(list){
+  const grid=document.getElementById('resultsGrid');
+  grid.innerHTML='';
+  document.getElementById('resultCount').textContent=list.length;
+  if(!list.length){grid.innerHTML='<div class="no-results"><div class="emoji">🔍</div><h3>No skills found</h3><p>Try different keywords or filters.</p></div>';return;}
+  list.forEach(s=>{
+    let card=document.createElement('div');card.className='skill-card';
+    card.innerHTML=`
+      <div class="card-accent" style="background:${s.accentColor}"></div>
+      <div class="card-body">
+        <div class="card-top">
+          <span class="category-badge ${catClassMap[s.cat]}">${catLabelMap[s.cat]}</span>
+          <span class="mode-tag">${s.mode}</span>
+        </div>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
+        <div class="card-footer">
+          <div class="provider">
+            <div class="prov-av" style="background:${s.avColor}">${s.av}</div>
+            <div><div class="prov-name">${s.name}</div><div class="prov-rating">★ ${s.rating} (${s.reviews})</div></div>
+          </div>
+          <div class="price-tag">${s.credits} cr/hr</div>
+        </div>
+      </div>`;
+    card.onclick=()=>location.href='skill-detail.html';
+    grid.appendChild(card);
+  });
+}
+
+function filterCards(){
+  let query=document.getElementById('searchInput').value.toLowerCase();
+  let filtered=skills.filter(s=>{
+    let catMatch=currentCat==='all'||s.cat===currentCat;
+    let searchMatch=!query||s.title.toLowerCase().includes(query)||s.desc.toLowerCase().includes(query)||s.name.toLowerCase().includes(query);
+    return catMatch&&searchMatch;
+  });
+  renderCards(filtered);
+}
+
+function setCat(el,cat){
+  document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');currentCat=cat;filterCards();
+}
+
+function clearFilters(){
+  currentCat='all';
+  document.getElementById('searchInput').value='';
+  document.querySelectorAll('.ftag').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.ftag').classList.add('active');
+  filterCards();
+}
+
+renderCards(skills);
+</script>
+</body>
+</html>

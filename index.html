@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge – Exchange Skills, Build Community</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1c1c28;
+    --accent: #7c6aff;
+    --accent2: #ff6a8a;
+    --accent3: #6affca;
+    --text: #f0eeff;
+    --muted: #7a7a9a;
+    --border: rgba(124,106,255,0.18);
+    --glow: 0 0 40px rgba(124,106,255,0.25);
+  }
+
+  html { scroll-behavior: smooth; font-size: 15px; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    width: 100%;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(10,10,15,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-ghost {
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(124,106,255,0.3);
+  }
+
+  .btn-primary:hover {
+    background: #9580ff;
+    box-shadow: 0 0 30px rgba(124,106,255,0.5);
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+  }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: drift 8s ease-in-out infinite;
+  }
+
+  .orb1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(124,106,255,0.25) 0%, transparent 70%);
+    top: 10%; left: 20%;
+    animation-delay: 0s;
+  }
+
+  .orb2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,106,138,0.2) 0%, transparent 70%);
+    top: 20%; right: 15%;
+    animation-delay: 3s;
+  }
+
+  .orb3 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(106,255,202,0.15) 0%, transparent 70%);
+    bottom: 10%; left: 30%;
+    animation-delay: 6s;
+  }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(20px, -20px); }
+    66% { transform: translate(-15px, 15px); }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(124,106,255,0.12);
+    border: 1px solid rgba(124,106,255,0.3);
+    color: var(--accent);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    letter-spacing: 0.04em;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease 0.1s both;
+    max-width: 900px;
+  }
+
+  .hero h1 .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.2rem;
+    animation: fadeUp 0.8s ease 0.2s both;
+    font-weight: 300;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 4rem;
+    animation: fadeUp 0.8s ease 0.3s both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-large {
+    padding: 0.9rem 2.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+  }
+
+  .btn-outline-large {
+    padding: 0.9rem 2.2rem;
+    font-size: 1rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-outline-large:hover { border-color: var(--accent); background: rgba(124,106,255,0.08); }
+
+  .stats-row {
+    display: flex;
+    gap: 4rem;
+    animation: fadeUp 0.8s ease 0.4s both;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION */
+  section { padding: 6rem 4rem; }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-desc {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 480px;
+    font-weight: 300;
+  }
+
+  /* HOW IT WORKS */
+  .how-it-works { background: var(--surface); }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .steps { margin-top: 3rem; display: flex; flex-direction: column; gap: 2rem; }
+
+  .step {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .step:nth-child(1) { animation-delay: 0.1s; }
+  .step:nth-child(2) { animation-delay: 0.25s; }
+  .step:nth-child(3) { animation-delay: 0.4s; }
+  .step:nth-child(4) { animation-delay: 0.55s; }
+
+  .step-num {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: rgba(124,106,255,0.12);
+    border: 1px solid rgba(124,106,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+
+  .step-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .step-content p { color: var(--muted); font-size: 0.9rem; }
+
+  .visual-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .visual-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 60% 40%, rgba(124,106,255,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .credit-meter {
+    background: rgba(10,10,15,0.6);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .credit-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .credit-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent3);
+    letter-spacing: -0.02em;
+  }
+
+  .credit-value span { font-size: 1rem; color: var(--muted); margin-left: 4px; }
+
+  .credit-bar {
+    height: 6px;
+    background: var(--surface);
+    border-radius: 3px;
+    margin-top: 1rem;
+    overflow: hidden;
+  }
+
+  .credit-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    width: 65%;
+    animation: fillAnim 2s ease 0.5s both;
+  }
+
+  @keyframes fillAnim {
+    from { width: 0; }
+    to { width: 65%; }
+  }
+
+  .mini-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+
+  .skill-chip {
+    background: rgba(124,106,255,0.1);
+    border: 1px solid rgba(124,106,255,0.25);
+    color: var(--accent);
+    padding: 0.35rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .skill-chip:hover { background: rgba(124,106,255,0.2); transform: scale(1.04); }
+  .skill-chip.green { background: rgba(106,255,202,0.1); border-color: rgba(106,255,202,0.25); color: var(--accent3); }
+  .skill-chip.pink { background: rgba(255,106,138,0.1); border-color: rgba(255,106,138,0.25); color: var(--accent2); }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 3rem auto 0;
+  }
+
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(124,106,255,0.4);
+    transform: translateY(-4px);
+    box-shadow: var(--glow);
+  }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    background: rgba(124,106,255,0.12);
+    border: 1px solid rgba(124,106,255,0.2);
+  }
+
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+
+  .feature-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+  /* SKILLS MARKETPLACE PREVIEW */
+  .marketplace { background: var(--surface); }
+
+  .marketplace-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    max-width: 1100px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .cards-scroll {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .skill-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .skill-card:hover {
+    border-color: rgba(124,106,255,0.4);
+    transform: translateY(-3px);
+  }
+
+  .skill-card-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    margin-bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .skill-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .skill-card .skill-name {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+  }
+
+  .skill-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .credit-badge {
+    background: rgba(106,255,202,0.1);
+    color: var(--accent3);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 100px;
+    border: 1px solid rgba(106,255,202,0.2);
+  }
+
+  .rating { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 4rem;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(124,106,255,0.12) 0%, transparent 70%);
+  }
+
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 1.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-btn-wrap { position: relative; z-index: 1; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 4rem;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    max-width: 1100px;
+    margin: 0 auto 2rem;
+  }
+
+  .footer-brand p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-top: 1rem;
+    max-width: 240px;
+    line-height: 1.7;
+  }
+
+  .footer-col h5 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .footer-col a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.2s;
+  }
+
+  .footer-col a:hover { color: var(--text); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .max-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .how-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .cards-scroll { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .marketplace-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-dot"></div>
+    SkillBridge
+  </a>
+  <ul class="nav-links">
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="how-it-works.html">How it Works</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="signup.html" class="btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-orb orb3"></div>
+
+  <div class="badge">🌟 Skill-Credit Economy — No Money Needed</div>
+
+  <h1>
+    Exchange Skills,<br>
+    <span class="gradient-text">Build Your Community</span>
+  </h1>
+
+  <p>
+    Teach what you know, learn what you need. SkillBridge connects people through skills — not just cash.
+  </p>
+
+  <div class="hero-actions">
+    <a href="signup.html" class="btn-primary btn-large">Start Exchanging Free</a>
+    <a href="marketplace.html" class="btn-outline-large">Browse Skills →</a>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">12,400+</div>
+      <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">380+</div>
+      <div class="stat-label">Skill Categories</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">28,000+</div>
+      <div class="stat-label">Exchanges Made</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4.9★</div>
+      <div class="stat-label">Avg. Rating</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <div class="how-grid">
+    <div>
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">A New Kind of Economy</h2>
+      <p class="section-desc">Built on trust, skill, and community. No middlemen, no markups — just people helping each other.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h4>List Your Skills</h4>
+            <p>Tell us what you're great at — coding, cooking, music, languages, repairs, design, or anything else.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h4>Find or Request</h4>
+            <p>Browse available skills or post what you need. Filter by location, category, or credits.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h4>Exchange or Earn Credits</h4>
+            <p>Teach someone and earn SkillCredits. Use credits to learn from others — no money required.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <h4>Rate & Build Trust</h4>
+            <p>Grow your reputation through verified exchanges and community ratings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="visual-card">
+      <div class="credit-meter">
+        <div class="credit-label">Your SkillCredits</div>
+        <div class="credit-value">340 <span>SC</span></div>
+        <div class="credit-bar"><div class="credit-fill"></div></div>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;">Skills You Offer</p>
+      <div class="mini-skills">
+        <span class="skill-chip">🎨 UI Design</span>
+        <span class="skill-chip">⚛️ React</span>
+        <span class="skill-chip green">🎸 Guitar</span>
+        <span class="skill-chip pink">🌐 Spanish</span>
+        <span class="skill-chip">📐 Figma</span>
+      </div>
+      <p style="font-size:0.8rem;color:var(--muted);margin:1.2rem 0 0.8rem;">Skills You Want</p>
+      <div class="mini-skills">
+        <span class="skill-chip pink">🐍 Python</span>
+        <span class="skill-chip green">📷 Photography</span>
+        <span class="skill-chip">✍️ Copywriting</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section style="background:var(--bg)">
+  <div class="max-container" style="text-align:center">
+    <span class="section-label">Platform Features</span>
+    <h2 class="section-title">Everything You Need</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3>Skill-Credit Economy</h3>
+      <p>Earn credits by teaching, spend them learning. Fair, transparent, and accessible to everyone regardless of income.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📍</div>
+      <h3>Local & Online Connect</h3>
+      <p>Find people nearby for in-person exchanges or connect globally for online sessions — your choice.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⭐</div>
+      <h3>Verified Trust System</h3>
+      <p>Every profile is verified. Ratings, reviews, and endorsements build a trusted community ecosystem.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>Real-Time Messaging</h3>
+      <p>Chat, schedule, and coordinate with exchange partners through our integrated messaging system.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎓</div>
+      <h3>Student Friendly</h3>
+      <p>Designed for students, freelancers, and job seekers to build real-world experience and networks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Safe Exchanges</h3>
+      <p>Dispute resolution, session reviews, and community moderation keep every exchange fair and safe.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACE PREVIEW -->
+<section class="marketplace">
+  <div class="marketplace-header">
+    <div>
+      <span class="section-label">Marketplace</span>
+      <h2 class="section-title">Skills Available Now</h2>
+    </div>
+    <a href="marketplace.html" class="btn-ghost">View All →</a>
+  </div>
+  <div class="cards-scroll">
+    <div class="skill-card">
+      <div class="skill-card-avatar">R</div>
+      <h4>Riya Kapoor</h4>
+      <div class="skill-name">Python & Data Science</div>
+      <div class="skill-card-footer">
+        <span class="credit-badge">30 SC/hr</span>
+        <span class="rating">⭐ 4.9</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-avatar" style="background:linear-gradient(135deg,var(--accent3),var(--accent))">M</div>
+      <h4>Mohan Rao</h4>
+      <div class="skill-name">Carnatic Music</div>
+      <div class="skill-card-footer">
+        <span class="credit-badge">20 SC/hr</span>
+        <span class="rating">⭐ 5.0</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-avatar" style="background:linear-gradient(135deg,var(--accent2),#ff9a6a)">S</div>
+      <h4>Sara Ahmed</h4>
+      <div class="skill-name">Arabic Language</div>
+      <div class="skill-card-footer">
+        <span class="credit-badge">25 SC/hr</span>
+        <span class="rating">⭐ 4.8</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-avatar" style="background:linear-gradient(135deg,#6affca,#6aaeff)">A</div>
+      <h4>Arjun Dev</h4>
+      <div class="skill-name">UI/UX Design</div>
+      <div class="skill-card-footer">
+        <span class="credit-badge">35 SC/hr</span>
+        <span class="rating">⭐ 4.7</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <h2>Ready to Exchange<br>Your First Skill?</h2>
+  <p>Join 12,400+ members already building their communities.</p>
+  <div class="cta-btn-wrap">
+    <a href="signup.html" class="btn-primary btn-large">Create Free Account</a>
+    <a href="how-it-works.html" class="btn-outline-large">Learn More</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo" style="font-size:1.3rem;">
+        <div class="logo-dot"></div>SkillBridge
+      </a>
+      <p>A skill-credit platform connecting students, freelancers, and communities through the power of shared knowledge.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Platform</h5>
+      <ul>
+        <li><a href="marketplace.html">Marketplace</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="credits.html">Credits System</a></li>
+        <li><a href="#">Pricing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Community</h5>
+      <ul>
+        <li><a href="community.html">Community</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Forum</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 SkillBridge. All rights reserved.</span>
+    <span>Made with ♥ for communities everywhere</span>
+  </div>
+</footer>
+
+<script src="core.js"></script>
+</body>
+</html>

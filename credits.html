@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Credits Wallet – SkillBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--card:#1e2230;--border:#2a2f40;--accent:#00e5a0;--accent2:#7b61ff;--text:#e8eaf0;--muted:#7a7f94;--danger:#ff4d6d;--gold:#ffd166;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+a{text-decoration:none;color:inherit;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;}.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:28px;}.nav-links a{font-size:.9rem;color:var(--muted);}.nav-links a:hover{color:var(--text);}
+.nav-btn{background:var(--accent);color:#0d0f14;padding:9px 20px;border-radius:8px;font-weight:600;font-size:.88rem;}
+
+.page{max-width:1050px;margin:0 auto;padding:36px 24px 60px;}
+.page-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:6px;}
+.page-sub{color:var(--muted);font-size:.85rem;margin-bottom:28px;}
+
+/* BALANCE HERO */
+.balance-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px;}
+@media(max-width:700px){.balance-grid{grid-template-columns:1fr;}}
+.balance-card{border-radius:16px;padding:24px;position:relative;overflow:hidden;}
+.bal-main{background:linear-gradient(135deg,#1a1040,#0d1f1a);border:1px solid rgba(0,229,160,.3);}
+.bal-earned{background:var(--card);border:1px solid var(--border);}
+.bal-spent{background:var(--card);border:1px solid var(--border);}
+.balance-card h3{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+.balance-card .amount{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1;}
+.bal-main .amount{color:var(--accent);}
+.bal-earned .amount{color:var(--gold);}
+.bal-spent .amount{color:var(--danger);}
+.balance-card .sub{font-size:.8rem;color:var(--muted);margin-top:6px;}
+.glow{position:absolute;width:120px;height:120px;border-radius:50%;background:rgba(0,229,160,.12);right:-20px;top:-20px;filter:blur(30px);}
+
+/* QUICK ACTIONS */
+.actions-row{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+.action-btn{display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.action-btn.earn{background:rgba(0,229,160,.15);color:var(--accent);border:1px solid rgba(0,229,160,.3);}.action-btn.earn:hover{background:rgba(0,229,160,.25);}
+.action-btn.spend{background:rgba(123,97,255,.15);color:var(--accent2);border:1px solid rgba(123,97,255,.3);}.action-btn.spend:hover{background:rgba(123,97,255,.25);}
+.action-btn.transfer{background:var(--card);color:var(--text);border:1px solid var(--border);}.action-btn.transfer:hover{border-color:var(--gold);}
+
+/* CHART */
+.chart-section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.section-head h2{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;}
+.period-tabs{display:flex;gap:4px;}
+.ptab{padding:5px 12px;border-radius:6px;font-size:.78rem;cursor:pointer;color:var(--muted);transition:all .2s;border:1px solid transparent;}
+.ptab.active{background:var(--surface);color:var(--text);border-color:var(--border);}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:130px;padding-top:10px;}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.bar{width:100%;border-radius:6px 6px 0 0;transition:opacity .2s;cursor:pointer;position:relative;}
+.bar:hover{opacity:.8;}
+.bar-in{background:linear-gradient(to top,var(--accent),rgba(0,229,160,.5));}
+.bar-out{background:linear-gradient(to top,var(--danger),rgba(255,77,109,.5));}
+.bar-label{font-size:.68rem;color:var(--muted);}
+.bar-val{font-size:.7rem;color:var(--text);font-weight:600;}
+
+/* TRANSACTIONS */
+.tx-section{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.tx-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);}
+.tx-header h2{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;}
+.filter-row{display:flex;gap:6px;}
+.filter-btn{padding:5px 12px;border-radius:6px;font-size:.78rem;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--muted);transition:all .2s;}
+.filter-btn.active{border-color:var(--accent);color:var(--accent);}
+.tx-item{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--border);transition:background .15s;}
+.tx-item:hover{background:var(--surface);}
+.tx-item:last-child{border:none;}
+.tx-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.tx-icon.in{background:rgba(0,229,160,.12);}
+.tx-icon.out{background:rgba(255,77,109,.12);}
+.tx-icon.bonus{background:rgba(255,209,102,.12);}
+.tx-info{flex:1;}
+.tx-info h4{font-size:.9rem;font-weight:500;margin-bottom:2px;}
+.tx-info p{font-size:.75rem;color:var(--muted);}
+.tx-amount{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;}
+.tx-amount.pos{color:var(--accent);}
+.tx-amount.neg{color:var(--danger);}
+.tx-amount.gold{color:var(--gold);}
+.tx-status{font-size:.72rem;padding:3px 8px;border-radius:4px;margin-top:2px;display:inline-block;}
+.tx-status.completed{background:rgba(0,229,160,.1);color:var(--accent);}
+.tx-status.pending{background:rgba(255,209,102,.1);color:var(--gold);}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Skill<span>Bridge</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="marketplace.html">Marketplace</a>
+    <a href="dashboard.html">Dashboard</a><a href="profile.html">Profile</a>
+  </div>
+  <a href="post-skill.html" class="nav-btn">+ Post Skill</a>
+</nav>
+
+<div class="page">
+  <div class="page-title">💳 Credits Wallet</div>
+  <div class="page-sub">Track your skill-credit earnings, spending, and transaction history.</div>
+
+  <div class="balance-grid">
+    <div class="balance-card bal-main">
+      <div class="glow"></div>
+      <h3>Available Balance</h3>
+      <div class="amount">120</div>
+      <div class="sub">SkillBridge Credits</div>
+    </div>
+    <div class="balance-card bal-earned">
+      <h3>Total Earned</h3>
+      <div class="amount">285</div>
+      <div class="sub">Lifetime credits earned</div>
+    </div>
+    <div class="balance-card bal-spent">
+      <h3>Total Spent</h3>
+      <div class="amount">165</div>
+      <div class="sub">Lifetime credits spent</div>
+    </div>
+  </div>
+
+  <div class="actions-row">
+    <button class="action-btn earn">📋 Post a Skill → Earn Credits</button>
+    <button class="action-btn spend" onclick="location.href='marketplace.html'">🛒 Browse Skills → Spend Credits</button>
+    <button class="action-btn transfer">↗ Transfer Credits</button>
+  </div>
+
+  <div class="chart-section">
+    <div class="section-head">
+      <h2>Credit Activity</h2>
+      <div class="period-tabs">
+        <div class="ptab" onclick="setPeriod(this)">7D</div>
+        <div class="ptab active" onclick="setPeriod(this)">30D</div>
+        <div class="ptab" onclick="setPeriod(this)">All</div>
+      </div>
+    </div>
+    <div class="bar-chart" id="barChart"></div>
+  </div>
+
+  <div class="tx-section">
+    <div class="tx-header">
+      <h2>Transaction History</h2>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="setFilter(this,'all')">All</button>
+        <button class="filter-btn" onclick="setFilter(this,'in')">Earned</button>
+        <button class="filter-btn" onclick="setFilter(this,'out')">Spent</button>
+      </div>
+    </div>
+    <div id="txList">
+      <div class="tx-item" data-type="in"><div class="tx-icon in">⚡</div><div class="tx-info"><h4>React Session with Priya S.</h4><p>Apr 27, 2026 · 2 hours · Online</p><span class="tx-status completed">Completed</span></div><div class="tx-amount pos">+30</div></div>
+      <div class="tx-item" data-type="out"><div class="tx-icon out">🌍</div><div class="tx-info"><h4>French Tutoring with Priya S.</h4><p>Apr 27, 2026 · 1.5 hours · Online</p><span class="tx-status completed">Completed</span></div><div class="tx-amount neg">-18</div></div>
+      <div class="tx-item" data-type="in"><div class="tx-icon bonus">🎁</div><div class="tx-info"><h4>Referral Bonus – Mohammed K.</h4><p>Apr 25, 2026 · Bonus reward</p><span class="tx-status completed">Completed</span></div><div class="tx-amount gold">+10</div></div>
+      <div class="tx-item" data-type="in"><div class="tx-icon in">🎨</div><div class="tx-info"><h4>Figma Session with Ravi T.</h4><p>Apr 22, 2026 · 2 hours · Online</p><span class="tx-status completed">Completed</span></div><div class="tx-amount pos">+24</div></div>
+      <div class="tx-item" data-type="out"><div class="tx-icon out">🎵</div><div class="tx-info"><h4>Guitar Lessons with Ayesha N.</h4><p>Apr 20, 2026 · 1 hour · In-Person</p><span class="tx-status pending">Pending</span></div><div class="tx-amount neg">-8</div></div>
+      <div class="tx-item" data-type="in"><div class="tx-icon in">🐍</div><div class="tx-info"><h4>Python Session with Sneha R.</h4><p>Apr 18, 2026 · 3 hours · Online</p><span class="tx-status completed">Completed</span></div><div class="tx-amount pos">+45</div></div>
+      <div class="tx-item" data-type="bonus"><div class="tx-icon bonus">⭐</div><div class="tx-info"><h4>Top Rated Badge Bonus</h4><p>Apr 15, 2026 · Monthly reward</p><span class="tx-status completed">Completed</span></div><div class="tx-amount gold">+15</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Build bar chart
+const data=[
+  {label:'Apr 1',in:20,out:8},{label:'Apr 7',in:45,out:18},{label:'Apr 13',in:10,out:0},
+  {label:'Apr 15',in:15,out:8},{label:'Apr 18',in:45,out:0},{label:'Apr 20',in:0,out:8},
+  {label:'Apr 22',in:24,out:0},{label:'Apr 25',in:10,out:0},{label:'Apr 27',in:30,out:18}
+];
+const maxVal=Math.max(...data.map(d=>Math.max(d.in,d.out)));
+const chart=document.getElementById('barChart');
+data.forEach(d=>{
+  let wrap=document.createElement('div');wrap.className='bar-wrap';
+  let inH=Math.round((d.in/maxVal)*110);
+  let outH=Math.round((d.out/maxVal)*110);
+  wrap.innerHTML=`
+    <div style="display:flex;gap:3px;align-items:flex-end;height:110px;">
+      ${d.in?`<div class="bar bar-in" style="height:${inH}px;flex:1;" title="+${d.in}"></div>`:'<div style="flex:1"></div>'}
+      ${d.out?`<div class="bar bar-out" style="height:${outH}px;flex:1;" title="-${d.out}"></div>`:'<div style="flex:1"></div>'}
+    </div>
+    <div class="bar-label">${d.label}</div>`;
+  chart.appendChild(wrap);
+});
+function setPeriod(el){document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function setFilter(el,type){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
+  document.querySelectorAll('.tx-item').forEach(item=>{
+    if(type==='all')item.style.display='flex';
+    else item.style.display=item.dataset.type===type?'flex':'none';
+  });
+}
+</script>
+</body>
+</html>

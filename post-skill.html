@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Post a Skill – SkillBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--card:#1e2230;--border:#2a2f40;--accent:#00e5a0;--accent2:#7b61ff;--text:#e8eaf0;--muted:#7a7f94;--danger:#ff4d6d;--gold:#ffd166;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;width:100%;}
+a{text-decoration:none;color:inherit;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:12px 5%;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;}.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;}.nav-links a{font-size:.85rem;color:var(--muted);transition:color .2s;}.nav-links a:hover{color:var(--text);}
+.nav-btn{background:var(--accent);color:#0d0f14;padding:8px 18px;border-radius:8px;font-weight:600;font-size:.82rem;}
+
+/* HERO HEADER */
+.page-header{background:linear-gradient(135deg,rgba(123,97,255,.15),rgba(0,229,160,.08));border-bottom:1px solid var(--border);padding:32px 5%;text-align:center;}
+.page-header h1{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:8px;}
+.page-header p{color:var(--muted);font-size:.85rem;max-width:500px;margin:0 auto;}
+
+/* STEPS BAR */
+.steps-bar{max-width:680px;margin:32px auto;padding:0 24px;display:flex;align-items:center;gap:0;}
+.step{display:flex;align-items:center;gap:10px;flex:1;}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--card);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700;flex-shrink:0;transition:all .3s;}
+.step-num.active{background:var(--accent);border-color:var(--accent);color:#0d0f14;}
+.step-num.done{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+.step-label{font-size:.78rem;color:var(--muted);white-space:nowrap;}
+.step-label.active{color:var(--accent);}
+.step-line{flex:1;height:1px;background:var(--border);margin:0 8px;}
+.step-line.done{background:var(--accent2);}
+
+/* FORM */
+.form-wrap{max-width:680px;margin:0 auto 60px;padding:0 24px;}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;}
+.form-section{margin-bottom:28px;}
+.form-section h3{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:.85rem;font-weight:500;margin-bottom:7px;color:var(--text);}
+.field label span{color:var(--danger);}
+.field input,.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-size:.9rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+.field textarea{min-height:110px;resize:vertical;}
+.field select option{background:var(--card);}
+.field-hint{font-size:.75rem;color:var(--muted);margin-top:5px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:560px){.field-row{grid-template-columns:1fr;}}
+
+/* CATEGORY PILLS */
+.cat-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.cat-pill{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--surface);font-size:.82rem;cursor:pointer;transition:all .2s;color:var(--muted);}
+.cat-pill:hover{border-color:var(--accent);color:var(--accent);}
+.cat-pill.selected{border-color:var(--accent);background:rgba(0,229,160,.12);color:var(--accent);font-weight:600;}
+
+/* TAGS INPUT */
+.tags-input-wrap{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px;min-height:46px;align-items:center;cursor:text;}
+.tags-input-wrap:focus-within{border-color:var(--accent);}
+.tag-chip{background:rgba(123,97,255,.2);color:var(--accent2);padding:3px 10px;border-radius:12px;font-size:.78rem;display:flex;align-items:center;gap:5px;}
+.tag-chip button{background:none;border:none;color:var(--accent2);cursor:pointer;font-size:.9rem;line-height:1;padding:0;}
+.tag-input{background:none;border:none;outline:none;color:var(--text);font-size:.88rem;font-family:'DM Sans',sans-serif;flex:1;min-width:100px;}
+
+/* AVAILABILITY GRID */
+.day-grid{display:flex;gap:8px;flex-wrap:wrap;}
+.day-btn{padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:.82rem;cursor:pointer;color:var(--muted);transition:all .2s;}
+.day-btn:hover{border-color:var(--accent);color:var(--accent);}
+.day-btn.sel{border-color:var(--accent);background:rgba(0,229,160,.12);color:var(--accent);font-weight:600;}
+
+/* CREDIT SLIDER */
+.slider-wrap{padding:10px 0;}
+.credit-slider{width:100%;-webkit-appearance:none;height:4px;border-radius:4px;background:linear-gradient(to right,var(--accent) 0%,var(--accent) 50%,var(--border) 50%);outline:none;}
+.credit-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.credit-display{display:flex;justify-content:space-between;margin-top:8px;font-size:.82rem;color:var(--muted);}
+.credit-val{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent);text-align:center;margin-top:4px;}
+
+/* SUBMIT */
+.submit-row{display:flex;gap:12px;margin-top:8px;}
+.btn{padding:13px 28px;border-radius:10px;font-size:.92rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;font-family:'Syne',sans-serif;}
+.btn-primary{background:var(--accent);color:#0d0f14;flex:1;}.btn-primary:hover{opacity:.85;}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border);}.btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+
+/* SUCCESS */
+.success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;}
+.success-overlay.show{display:flex;}
+.success-box{background:var(--card);border:1px solid var(--accent);border-radius:20px;padding:48px 36px;max-width:420px;text-align:center;}
+.success-icon{font-size:3.5rem;margin-bottom:16px;}
+.success-box h2{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+.success-box p{color:var(--muted);font-size:.9rem;margin-bottom:24px;line-height:1.6;}
+.success-box button{background:var(--accent);color:#0d0f14;border:none;padding:12px 32px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Skill<span>Bridge</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="marketplace.html">Marketplace</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <a href="dashboard.html" class="nav-btn">Dashboard</a>
+</nav>
+
+<div class="page-header">
+  <h1>Post a New Skill</h1>
+  <p>Share your expertise with the community and start earning credits through skill exchanges.</p>
+</div>
+
+<div class="steps-bar">
+  <div class="step"><div class="step-num active" id="sn1">1</div><div class="step-label active">Basic Info</div></div>
+  <div class="step-line" id="sl1"></div>
+  <div class="step"><div class="step-num" id="sn2">2</div><div class="step-label" id="sl2t">Details</div></div>
+  <div class="step-line" id="sl2"></div>
+  <div class="step"><div class="step-num" id="sn3">3</div><div class="step-label" id="sl3t">Availability</div></div>
+</div>
+
+<div class="form-wrap">
+  <!-- STEP 1 -->
+  <div class="form-card" id="step1">
+    <div class="form-section">
+      <h3>Basic Information</h3>
+      <div class="field">
+        <label>Skill Title <span>*</span></label>
+        <input type="text" placeholder="e.g. React.js Development, Spanish Tutoring, Logo Design"/>
+        <div class="field-hint">Be specific — good titles get 3x more requests.</div>
+      </div>
+      <div class="field">
+        <label>Category <span>*</span></label>
+        <div class="cat-pills">
+          <div class="cat-pill" onclick="selectCat(this)">💻 Technology</div>
+          <div class="cat-pill" onclick="selectCat(this)">🎨 Design</div>
+          <div class="cat-pill" onclick="selectCat(this)">📚 Education</div>
+          <div class="cat-pill" onclick="selectCat(this)">🌍 Languages</div>
+          <div class="cat-pill" onclick="selectCat(this)">🎵 Music</div>
+          <div class="cat-pill" onclick="selectCat(this)">🔧 Repair</div>
+          <div class="cat-pill" onclick="selectCat(this)">💼 Business</div>
+          <div class="cat-pill" onclick="selectCat(this)">🏋️ Fitness</div>
+          <div class="cat-pill" onclick="selectCat(this)">✍️ Writing</div>
+          <div class="cat-pill" onclick="selectCat(this)">📸 Photography</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Exchange Type <span>*</span></label>
+          <select><option>Credits</option><option>Skill Swap</option><option>Both</option></select>
+        </div>
+        <div class="field">
+          <label>Delivery Mode <span>*</span></label>
+          <select><option>Online</option><option>In-Person</option><option>Both</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="btn btn-primary" onclick="goStep(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="form-card" id="step2" style="display:none;">
+    <div class="form-section">
+      <h3>Skill Details</h3>
+      <div class="field">
+        <label>Description <span>*</span></label>
+        <textarea placeholder="Describe what you offer, your experience level, what learners will gain, and your teaching style..."></textarea>
+        <div class="field-hint">Minimum 80 characters. Detail builds trust.</div>
+      </div>
+      <div class="field">
+        <label>What Will They Learn?</label>
+        <textarea placeholder="List 3-6 learning outcomes, e.g. 'Build a full React app from scratch'..." style="min-height:80px;"></textarea>
+      </div>
+      <div class="field">
+        <label>Tags / Keywords</label>
+        <div class="tags-input-wrap" onclick="document.getElementById('tagInput').focus()">
+          <div class="tag-chip">React<button onclick="removeTag(this)">×</button></div>
+          <div class="tag-chip">JavaScript<button onclick="removeTag(this)">×</button></div>
+          <input id="tagInput" class="tag-input" placeholder="Add tag & press Enter" onkeydown="addTag(event)"/>
+        </div>
+        <div class="field-hint">Add skills or tools related to this offering.</div>
+      </div>
+      <div class="field">
+        <label>Credits per Hour <span>*</span></label>
+        <div class="slider-wrap">
+          <input type="range" class="credit-slider" min="1" max="50" value="12" id="creditSlider" oninput="updateCredit(this)"/>
+          <div class="credit-display"><span>1 credit</span><span>50 credits</span></div>
+          <div class="credit-val" id="creditVal">12 credits/hr</div>
+        </div>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="btn btn-outline" onclick="goStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="form-card" id="step3" style="display:none;">
+    <div class="form-section">
+      <h3>Availability & Settings</h3>
+      <div class="field">
+        <label>Available Days</label>
+        <div class="day-grid">
+          <div class="day-btn" onclick="toggleDay(this)">Mon</div>
+          <div class="day-btn" onclick="toggleDay(this)">Tue</div>
+          <div class="day-btn" onclick="toggleDay(this)">Wed</div>
+          <div class="day-btn" onclick="toggleDay(this)">Thu</div>
+          <div class="day-btn" onclick="toggleDay(this)">Fri</div>
+          <div class="day-btn sel" onclick="toggleDay(this)">Sat</div>
+          <div class="day-btn sel" onclick="toggleDay(this)">Sun</div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Preferred Time From</label>
+          <input type="time" value="18:00"/>
+        </div>
+        <div class="field">
+          <label>Preferred Time To</label>
+          <input type="time" value="22:00"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Session Duration</label>
+        <select><option>30 minutes</option><option>1 hour</option><option selected>1–2 hours</option><option>Flexible</option></select>
+      </div>
+      <div class="field">
+        <label>Max Sessions per Week</label>
+        <input type="number" value="3" min="1" max="20"/>
+      </div>
+      <div class="field">
+        <label>Location (for in-person)</label>
+        <input type="text" placeholder="e.g. Madhapur, Hyderabad"/>
+      </div>
+    </div>
+    <div class="submit-row">
+      <button class="btn btn-outline" onclick="goStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="submitForm()">🚀 Post Skill</button>
+    </div>
+  </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">🎉</div>
+    <h2>Skill Posted!</h2>
+    <p>Your skill is now live on the marketplace. Other members can discover and request exchanges with you.</p>
+    <button onclick="location.href='marketplace.html'">View Marketplace</button>
+  </div>
+</div>
+
+<script src="core.js"></script>
+<script>
+function goStep(n){
+  for(let i=1;i<=3;i++){document.getElementById('step'+i).style.display=i===n?'block':'none';}
+  for(let i=1;i<=3;i++){
+    let sn=document.getElementById('sn'+i);
+    if(i<n){sn.className='step-num done';sn.textContent='✓';}
+    else if(i===n){sn.className='step-num active';sn.textContent=i;}
+    else{sn.className='step-num';sn.textContent=i;}
+  }
+}
+function selectCat(el){document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');}
+function toggleDay(el){el.classList.toggle('sel');}
+function addTag(e){if(e.key==='Enter'){let v=e.target.value.trim();if(v){let chip=document.createElement('div');chip.className='tag-chip';chip.innerHTML=`${v}<button onclick="removeTag(this)">×</button>`;e.target.before(chip);e.target.value='';}}}
+function removeTag(btn){btn.parentElement.remove();}
+function updateCredit(el){
+  let v=el.value;
+  document.getElementById('creditVal').textContent=v+' credits/hr';
+  el.style.background=`linear-gradient(to right,var(--accent) 0%,var(--accent) ${(v/50)*100}%,var(--border) ${(v/50)*100}%)`;
+}
+function submitForm(){
+  const title = document.querySelector('input[placeholder="e.g. Master React Hooks"]').value;
+  const category = document.querySelector('.cat-pill.selected')?.textContent || 'General';
+  const description = document.querySelector('textarea').value;
+  const price = document.getElementById('creditSlider').value;
+  const user = SkillBridge.getCurrentUser();
+
+  SkillBridge.addSkill({
+    title,
+    category,
+    description,
+    price: parseInt(price),
+    provider: user ? user.name : 'Anonymous',
+    rating: 5.0,
+    reviews: 0
+  });
+
+  document.getElementById('successOverlay').classList.add('show');
+}
+</script>
+</body>
+</html>

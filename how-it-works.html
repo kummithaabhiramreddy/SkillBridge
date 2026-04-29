@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge – How It Works</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #12121a; --surface2: #1c1c28;
+    --accent: #7c6aff; --accent2: #ff6a8a; --accent3: #6affca;
+    --text: #f0eeff; --muted: #7a7a9a; --border: rgba(124,106,255,0.18);
+  }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; width: 100%; overflow-x: hidden; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)} }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 5%; background: rgba(10,10,15,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .nav-actions { display: flex; gap: 1rem; align-items: center; }
+  .btn-ghost { color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; }
+  .btn-primary:hover { background: #9580ff; }
+
+  /* HERO */
+  .hero { padding: 8rem 5% 4rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 50% 30%, rgba(124,106,255,0.15) 0%, transparent 70%); pointer-events: none; }
+  .hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.4rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.2rem; animation: fadeUp 0.7s ease both; }
+  .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 540px; margin: 0 auto; animation: fadeUp 0.7s ease 0.1s both; }
+
+  /* STEPS */
+  .steps-section { padding: 5rem 4rem; max-width: 1100px; margin: 0 auto; }
+  .step-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-bottom: 8rem; }
+  .step-row:nth-child(even) { direction: rtl; }
+  .step-row:nth-child(even) .step-content { direction: ltr; }
+  .step-visual { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; position: relative; height: 350px; display: flex; align-items: center; justify-content: center; }
+  .step-visual::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(124,106,255,0.08), transparent 70%); }
+  .step-num { font-family: 'Syne', sans-serif; font-size: 6rem; font-weight: 800; color: rgba(124,106,255,0.1); position: absolute; top: -1rem; left: 1rem; }
+  .step-content h2 { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; }
+  .step-content p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.2rem; }
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+  .feature-list li { display: flex; align-items: center; gap: 0.8rem; font-size: 0.95rem; color: var(--text); }
+  .feature-list li::before { content: '✦'; color: var(--accent3); font-weight: 700; }
+
+  /* CREDIT EXPLAINER */
+  .credits-explainer { padding: 6rem 4rem; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; }
+  .credits-explainer h2 { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem; }
+  .credits-explainer p { color: var(--muted); max-width: 580px; margin: 0 auto 2.5rem; font-size: 0.95rem; }
+  .credit-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 1000px; margin: 0 auto; }
+  .c-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: left; transition: all 0.3s; }
+  .c-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+  .c-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .c-card h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .c-card p { font-size: 0.88rem; margin: 0; color: var(--muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta { padding: 8rem 4rem; text-align: center; position: relative; }
+  .cta h2 { font-family: 'Syne', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 1.5rem; }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; }
+  .btn-lg { padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border-radius: 12px; text-decoration: none; transition: all 0.2s; }
+
+  footer { background: var(--bg); border-top: 1px solid var(--border); padding: 3rem 4rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
+  footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; }
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;} .nav-links{display:none;}
+    .hero,.steps-section,.credits-explainer,.cta{padding-left:1.5rem;padding-right:1.5rem;}
+    .step-row { grid-template-columns: 1fr; gap: 2rem; margin-bottom: 4rem; }
+    .step-row:nth-child(even) { direction: ltr; }
+    .credit-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>SkillBridge</a>
+  <ul class="nav-links">
+    <li><a href="marketplace.html">Marketplace</a></li>
+    <li><a href="how-it-works.html" class="active">How it Works</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="signup.html" class="btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <h1>The <span>Skill-Credit</span> Economy</h1>
+  <p>Learn how we've removed money from the equation to build a more accessible, community-driven way to share knowledge.</p>
+</section>
+
+<section class="steps-section">
+  <div class="step-row">
+    <div class="step-content">
+      <div class="step-num">01</div>
+      <h2>Create Your Skill Identity</h2>
+      <p>Sign up and tell us what you're passionate about. Whether you're a coder, a cook, or a calligrapher, your knowledge has value here.</p>
+      <ul class="feature-list">
+        <li>Get 50 bonus SkillCredits instantly</li>
+        <li>List up to 5 primary skills to offer</li>
+        <li>Set your own 'Credit Rate' per hour</li>
+      </ul>
+    </div>
+    <div class="step-visual">
+       <div style="text-align:center">
+          <div style="width:100px;height:100px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:white;font-weight:800;font-family:'Syne',sans-serif">A</div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700">Arjun Dev</div>
+          <div style="color:var(--accent);font-size:0.8rem">UI/UX Designer</div>
+       </div>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <div class="step-content">
+      <div class="step-num">02</div>
+      <h2>Discover & Connect</h2>
+      <p>Browse the marketplace for skills you've always wanted to learn. Use filters to find experts nearby or connect globally for online sessions.</p>
+      <ul class="feature-list">
+        <li>Verified profiles & peer reviews</li>
+        <li>Real-time chat to discuss goals</li>
+        <li>Request specific skills if not listed</li>
+      </ul>
+    </div>
+    <div class="step-visual">
+      <div style="width:200px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem">
+        <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem">SEARCH</div>
+        <div style="height:30px;background:var(--surface);border-radius:6px;border:1px solid var(--border);margin-bottom:1rem"></div>
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem"><div style="width:30px;height:30px;background:var(--accent);border-radius:50%"></div><div style="flex:1;height:30px;background:var(--surface);border-radius:4px"></div></div>
+        <div style="display:flex;gap:0.5rem;"><div style="width:30px;height:30px;background:var(--accent2);border-radius:50%"></div><div style="flex:1;height:30px;background:var(--surface);border-radius:4px"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-row">
+    <div class="step-content">
+      <div class="step-num">03</div>
+      <h2>The Skill Exchange</h2>
+      <p>Schedule a session and start sharing. After the session, credits are automatically transferred from the learner to the teacher.</p>
+      <ul class="feature-list">
+        <li>Secure session management</li>
+        <li>Automatic credit transfer</li>
+        <li>Build your rating and reputation</li>
+      </ul>
+    </div>
+    <div class="step-visual">
+       <div style="display:flex;align-items:center;gap:1.5rem">
+          <div style="text-align:center"><div style="width:50px;height:50px;background:var(--accent);border-radius:50%"></div><div style="font-size:0.7rem;margin-top:0.4rem">Teacher</div></div>
+          <div style="font-size:1.5rem;color:var(--accent3)">→ 30 SC →</div>
+          <div style="text-align:center"><div style="width:50px;height:50px;background:var(--accent2);border-radius:50%"></div><div style="font-size:0.7rem;margin-top:0.4rem">Learner</div></div>
+       </div>
+    </div>
+  </div>
+</section>
+
+<section class="credits-explainer">
+  <h2>Understanding SkillCredits</h2>
+  <p>SkillCredits (SC) are the internal currency of SkillBridge. They represent time and effort, ensuring a fair exchange for everyone.</p>
+  <div class="credit-cards">
+    <div class="c-card">
+      <div class="c-icon">💎</div>
+      <h3>Earn by Teaching</h3>
+      <p>Share your expertise with others. For every hour you teach, you earn the credits you've set on your profile.</p>
+    </div>
+    <div class="c-card">
+      <div class="c-icon">🎓</div>
+      <h3>Spend to Learn</h3>
+      <p>Use your earned credits to unlock sessions with experts in any field. No cash required, ever.</p>
+    </div>
+    <div class="c-card">
+      <div class="c-icon">🚀</div>
+      <h3>Growth & Bonuses</h3>
+      <p>Earn bonus credits by referring friends, completing your profile, or contributing to the community forum.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Start Your First Exchange</h2>
+  <p>Join 12,400+ members building a smarter community.</p>
+  <div class="cta-btns">
+    <a href="signup.html" class="btn-primary btn-lg">Get 50 Free Credits</a>
+    <a href="marketplace.html" class="btn-ghost btn-lg" style="border:1px solid var(--border)">Browse Skills</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 SkillBridge. | <a href="index.html">Home</a> <a href="marketplace.html">Marketplace</a> <a href="about.html">About</a> <a href="community.html">Community</a></p>
+</footer>
+
+</body>
+</html>

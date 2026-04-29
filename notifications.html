@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Notifications – SkillBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--card:#1e2230;--border:#2a2f40;--accent:#00e5a0;--accent2:#7b61ff;--text:#e8eaf0;--muted:#7a7f94;--danger:#ff4d6d;--gold:#ffd166;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;width:100%;}
+a{text-decoration:none;color:inherit;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:12px 5%;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;}.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;}.nav-links a{font-size:.85rem;color:var(--muted);}.nav-links a:hover{color:var(--text);}
+.nav-btn{background:var(--accent);color:#0d0f14;padding:8px 18px;border-radius:8px;font-weight:600;font-size:.82rem;}
+
+.page{max-width:720px;margin:0 auto;padding:36px 24px 60px;}
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.page-head h1{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;}
+.head-actions{display:flex;gap:10px;}
+.ghost-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:8px;font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}.ghost-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* TABS */
+.notif-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.ntab{padding:10px 18px;font-size:.85rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px;}.ntab.active{color:var(--accent);border-bottom-color:var(--accent);}.ntab:hover{color:var(--text);}
+.ntab-badge{background:var(--accent);color:#0d0f14;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700;}
+
+/* NOTIFICATION ITEMS */
+.notif-group{margin-bottom:24px;}
+.group-label{font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+
+.notif-item{display:flex;align-items:flex-start;gap:14px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:border-color .2s,transform .15s;position:relative;}
+.notif-item:hover{border-color:var(--accent);transform:translateX(3px);}
+.notif-item.unread{border-left:3px solid var(--accent);}
+.notif-item.unread::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent);position:absolute;top:18px;right:16px;}
+
+.notif-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.icon-exchange{background:rgba(0,229,160,.12);}
+.icon-msg{background:rgba(123,97,255,.12);}
+.icon-review{background:rgba(255,209,102,.12);}
+.icon-credit{background:rgba(0,229,160,.12);}
+.icon-system{background:rgba(255,77,109,.1);}
+.icon-badge{background:rgba(255,209,102,.15);}
+.icon-reminder{background:rgba(123,97,255,.1);}
+
+.notif-body{flex:1;min-width:0;}
+.notif-body h4{font-size:.88rem;font-weight:600;margin-bottom:3px;line-height:1.3;}
+.notif-body p{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.notif-time{font-size:.72rem;color:var(--muted);margin-top:5px;}
+.notif-actions{display:flex;gap:8px;margin-top:10px;}
+.notif-btn{padding:6px 14px;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.notif-btn.primary{background:var(--accent);color:#0d0f14;}.notif-btn.primary:hover{opacity:.85;}
+.notif-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border);}.notif-btn.secondary:hover{border-color:var(--accent);color:var(--accent);}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty .emoji{font-size:3rem;margin-bottom:14px;}
+.empty h3{font-family:'Syne',sans-serif;font-size:1.2rem;color:var(--text);margin-bottom:6px;}
+
+/* SETTINGS SIDEBAR LINK */
+.notif-settings{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:32px;display:flex;align-items:center;justify-content:space-between;}
+.notif-settings p{font-size:.85rem;color:var(--muted);}
+.notif-settings a{color:var(--accent);font-size:.85rem;font-weight:600;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Skill<span>Bridge</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="marketplace.html">Marketplace</a>
+    <a href="messages.html">Messages</a><a href="dashboard.html">Dashboard</a>
+  </div>
+  <a href="post-skill.html" class="nav-btn">+ Post Skill</a>
+</nav>
+
+<div class="page">
+  <div class="page-head">
+    <h1>🔔 Notifications</h1>
+    <div class="head-actions">
+      <button class="ghost-btn" onclick="markAllRead()">Mark all read</button>
+      <button class="ghost-btn" onclick="clearAll()">Clear all</button>
+    </div>
+  </div>
+
+  <div class="notif-tabs">
+    <div class="ntab active" onclick="showTab('all',this)">All <span class="ntab-badge">5</span></div>
+    <div class="ntab" onclick="showTab('exchanges',this)">Exchanges <span class="ntab-badge">2</span></div>
+    <div class="ntab" onclick="showTab('messages',this)">Messages</div>
+    <div class="ntab" onclick="showTab('credits',this)">Credits</div>
+    <div class="ntab" onclick="showTab('system',this)">System</div>
+  </div>
+
+  <div id="tab-all">
+    <!-- TODAY -->
+    <div class="notif-group">
+      <div class="group-label">Today</div>
+
+      <div class="notif-item unread" data-type="exchanges">
+        <div class="notif-icon icon-exchange">🔄</div>
+        <div class="notif-body">
+          <h4>New Exchange Request from Priya S.</h4>
+          <p>Priya wants to exchange <strong>French Tutoring</strong> for your <strong>React & Next.js</strong> sessions. 10 credits/hr offered.</p>
+          <div class="notif-time">2 minutes ago</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary" onclick="acceptNotif(this)">✓ Accept</button>
+            <button class="notif-btn secondary" onclick="declineNotif(this)">✕ Decline</button>
+            <button class="notif-btn secondary" onclick="location.href='messages.html'">💬 Message</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="notif-item unread" data-type="messages">
+        <div class="notif-icon icon-msg">💬</div>
+        <div class="notif-body">
+          <h4>New message from Mohammed K.</h4>
+          <p>"Hey! I'd love to schedule that Node.js session for this Saturday. Are you available around 3 PM?"</p>
+          <div class="notif-time">45 minutes ago</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary" onclick="location.href='messages.html'">Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="notif-item unread" data-type="credits">
+        <div class="notif-icon icon-credit">💳</div>
+        <div class="notif-body">
+          <h4>+30 Credits Received</h4>
+          <p>You've received <strong>30 credits</strong> for your React session with Priya S. (2 hours × 15 credits/hr). New balance: 120 credits.</p>
+          <div class="notif-time">3 hours ago</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- YESTERDAY -->
+    <div class="notif-group">
+      <div class="group-label">Yesterday</div>
+
+      <div class="notif-item unread" data-type="reviews">
+        <div class="notif-icon icon-review">⭐</div>
+        <div class="notif-body">
+          <h4>Priya S. left you a 5-star review!</h4>
+          <p>"Arjun is an excellent teacher! He helped me set up my first React project and explained everything clearly. Highly recommend!"</p>
+          <div class="notif-time">Yesterday, 8:45 PM</div>
+          <div class="notif-actions">
+            <button class="notif-btn secondary" onclick="location.href='profile.html'">View Profile</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="notif-item unread" data-type="exchanges">
+        <div class="notif-icon icon-exchange">✅</div>
+        <div class="notif-body">
+          <h4>Exchange Completed – Sneha R.</h4>
+          <p>Your skill exchange with Sneha R. (Python session) has been marked as completed. Don't forget to leave a review!</p>
+          <div class="notif-time">Yesterday, 6:20 PM</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary">Leave Review</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THIS WEEK -->
+    <div class="notif-group">
+      <div class="group-label">This Week</div>
+
+      <div class="notif-item" data-type="system">
+        <div class="notif-icon icon-badge">🏅</div>
+        <div class="notif-body">
+          <h4>You earned the "Top Rated" Badge!</h4>
+          <p>Congratulations! You've maintained a 4.8+ rating across 10+ sessions. You've unlocked the <strong>Top Rated</strong> badge and received a 15 credit bonus.</p>
+          <div class="notif-time">Apr 25, 2026</div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="system">
+        <div class="notif-icon icon-reminder">📅</div>
+        <div class="notif-body">
+          <h4>Session Reminder – Ravi T.</h4>
+          <p>Your guitar lessons session with Ravi T. is scheduled for <strong>tomorrow at 5:00 PM</strong>. Make sure you're ready!</p>
+          <div class="notif-time">Apr 24, 2026</div>
+          <div class="notif-actions">
+            <button class="notif-btn secondary">View Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="messages">
+        <div class="notif-icon icon-msg">💬</div>
+        <div class="notif-body">
+          <h4>Ayesha N. replied to your message</h4>
+          <p>"Sure, Saturday works great for me! Let's do the session at 11 AM."</p>
+          <div class="notif-time">Apr 23, 2026</div>
+        </div>
+      </div>
+
+      <div class="notif-item" data-type="system">
+        <div class="notif-icon icon-system">🔔</div>
+        <div class="notif-body">
+          <h4>Your skill listing was approved</h4>
+          <p>Your skill <strong>"React & Next.js Development"</strong> has been reviewed and approved. It's now live on the marketplace!</p>
+          <div class="notif-time">Apr 22, 2026</div>
+          <div class="notif-actions">
+            <button class="notif-btn secondary" onclick="location.href='skill-detail.html'">View Listing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-exchanges" style="display:none;"></div>
+  <div id="tab-messages" style="display:none;"></div>
+  <div id="tab-credits" style="display:none;"></div>
+  <div id="tab-system" style="display:none;"></div>
+
+  <div class="notif-settings">
+    <div>
+      <strong style="font-size:.9rem;">Notification Preferences</strong>
+      <p>Control what alerts you receive and how.</p>
+    </div>
+    <a href="#">Manage →</a>
+  </div>
+</div>
+
+<script>
+function showTab(type, el){
+  ['all','exchanges','messages','credits','system'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display='none';
+  });
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+
+  if(type==='all'){document.getElementById('tab-all').style.display='block';return;}
+
+  let items=document.querySelectorAll('#tab-all .notif-item');
+  let tab=document.getElementById('tab-'+type);
+  tab.style.display='block';
+  tab.innerHTML='';
+  let found=false;
+  items.forEach(item=>{
+    if(item.dataset.type===type||
+       (type==='exchanges'&&(item.dataset.type==='exchanges'))||
+       (type==='messages'&&item.dataset.type==='messages')||
+       (type==='credits'&&item.dataset.type==='credits')||
+       (type==='system'&&(item.dataset.type==='system'||item.dataset.type==='reviews'))){
+      tab.appendChild(item.cloneNode(true));found=true;
+    }
+  });
+  if(!found)tab.innerHTML='<div class="empty"><div class="emoji">✅</div><h3>All caught up!</h3><p>No notifications in this category.</p></div>';
+}
+
+function markAllRead(){
+  document.querySelectorAll('.notif-item.unread').forEach(i=>{
+    i.classList.remove('unread');
+    let dot=i.querySelector('::before');
+  });
+  document.querySelectorAll('.ntab-badge').forEach(b=>b.remove());
+}
+function clearAll(){
+  document.querySelectorAll('#tab-all .notif-item').forEach(i=>i.remove());
+  document.getElementById('tab-all').innerHTML='<div class="empty"><div class="emoji">🎉</div><h3>All clear!</h3><p>You have no notifications right now.</p></div>';
+  document.querySelectorAll('.ntab-badge').forEach(b=>b.remove());
+}
+function acceptNotif(btn){
+  let item=btn.closest('.notif-item');
+  item.querySelector('h4').textContent='✅ Exchange Accepted!';
+  item.querySelector('p').textContent='The exchange with Priya S. has been accepted. Head to messages to schedule your first session.';
+  item.querySelector('.notif-actions').remove();
+  item.classList.remove('unread');
+}
+function declineNotif(btn){
+  btn.closest('.notif-item').style.opacity='0.4';
+  btn.closest('.notif-item').querySelector('.notif-actions').remove();
+  btn.closest('.notif-item').querySelector('h4').textContent='Exchange Declined';
+}
+</script>
+</body>
+</html>

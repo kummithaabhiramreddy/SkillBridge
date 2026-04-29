@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Skill Detail – SkillBridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0d0f14;--surface:#161920;--card:#1e2230;--border:#2a2f40;--accent:#00e5a0;--accent2:#7b61ff;--text:#e8eaf0;--muted:#7a7f94;--danger:#ff4d6d;--gold:#ffd166;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;width:100%;}
+a{text-decoration:none;color:inherit;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:12px 5%;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;}.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;}.nav-links a{font-size:.85rem;color:var(--muted);transition:color .2s;}.nav-links a:hover{color:var(--text);}
+.nav-btn{background:var(--accent);color:#0d0f14;padding:8px 18px;border-radius:8px;font-weight:600;font-size:.82rem;}
+.breadcrumb{max-width:1100px;margin:18px auto;padding:0 24px;font-size:.78rem;color:var(--muted);display:flex;gap:8px;align-items:center;}
+.breadcrumb a{color:var(--muted);}.breadcrumb a:hover{color:var(--accent);}
+.breadcrumb span{color:var(--text);}
+.page{max-width:1100px;margin:0 auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 360px;gap:32px;}
+@media(max-width:800px){.page{grid-template-columns:1fr;}}
+
+/* HERO */
+.skill-hero{background:linear-gradient(135deg,rgba(123,97,255,.2),rgba(0,229,160,.1));border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.skill-hero::before{content:'⚡';position:absolute;right:24px;top:24px;font-size:4rem;opacity:.15;}
+.hero-category{display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,160,.12);color:var(--accent);font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:14px;}
+.skill-hero h1{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;line-height:1.2;margin-bottom:10px;}
+.hero-meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;}
+.meta-item{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);}
+.meta-item strong{color:var(--text);}
+.star-row{color:var(--gold);font-size:.9rem;display:flex;align-items:center;gap:6px;}
+.star-row span{color:var(--muted);font-size:.82rem;}
+
+/* SECTION */
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px;}
+.section h2{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.desc{font-size:.9rem;color:var(--muted);line-height:1.8;}
+.what-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.what-list li{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;color:var(--muted);}
+.what-list li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0;margin-top:1px;}
+.tags-row{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{background:var(--surface);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:.78rem;color:var(--text);}
+
+/* REVIEWS */
+.review-card{padding:16px 0;border-bottom:1px solid var(--border);}
+.review-card:last-child{border:none;}
+.rev-top{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.rev-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+.rev-info h4{font-size:.88rem;font-weight:600;}
+.rev-info p{font-size:.75rem;color:var(--muted);}
+.rev-stars{color:var(--gold);font-size:.82rem;margin-bottom:6px;}
+.rev-body{font-size:.85rem;color:var(--muted);line-height:1.6;}
+
+/* SIDEBAR */
+.booking-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;position:sticky;top:90px;}
+.price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:20px;}
+.price-main{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--accent);}
+.price-unit{font-size:.85rem;color:var(--muted);}
+.btn{width:100%;padding:14px;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;border:none;margin-bottom:10px;transition:all .2s;font-family:'Syne',sans-serif;}
+.btn-primary{background:var(--accent);color:#0d0f14;}.btn-primary:hover{opacity:.85;}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);}.btn-secondary:hover{border-color:var(--accent);color:var(--accent);}
+.feature-list{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+.feature-list li{display:flex;align-items:center;gap:10px;font-size:.85rem;color:var(--muted);}
+.feature-list li span{color:var(--accent);}
+
+/* PROVIDER */
+.provider-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-top:18px;}
+.provider-top{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.prov-av{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;}
+.prov-name{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;}
+.prov-title{font-size:.8rem;color:var(--muted);margin-top:2px;}
+.prov-stats{display:flex;gap:16px;margin-bottom:16px;}
+.prov-stat{text-align:center;flex:1;background:var(--surface);border-radius:8px;padding:10px;}
+.prov-stat-num{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--accent);}
+.prov-stat-label{font-size:.7rem;color:var(--muted);margin-top:2px;}
+.msg-btn{width:100%;padding:10px;border-radius:8px;background:transparent;color:var(--text);border:1px solid var(--border);cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;}.msg-btn:hover{border-color:var(--accent);color:var(--accent);}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">Skill<span>Bridge</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a><a href="marketplace.html">Marketplace</a>
+    <a href="community.html">Community</a><a href="dashboard.html">Dashboard</a>
+  </div>
+  <a href="dashboard.html" class="nav-btn">Dashboard</a>
+</nav>
+
+<div class="breadcrumb">
+  <a href="marketplace.html">Marketplace</a> › <a href="#">Technology</a> › <span>React & Next.js Development</span>
+</div>
+
+<div class="page">
+  <div>
+    <div class="skill-hero">
+      <div class="hero-category">⚡ Technology</div>
+      <h1>React & Next.js Development</h1>
+      <div class="star-row">★★★★★ <span>4.9 (18 reviews)</span></div>
+      <div class="hero-meta">
+        <div class="meta-item">🕐 <strong>1–3 hrs/session</strong></div>
+        <div class="meta-item">📍 <strong>Online & Hyderabad</strong></div>
+        <div class="meta-item">🔄 <strong>38 exchanges done</strong></div>
+        <div class="meta-item">🗓 <strong>Available Mon, Wed, Fri</strong></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>About This Skill</h2>
+      <p class="desc">I'll help you build modern, production-ready web applications using React 18 and Next.js 14. Whether you're a beginner or an intermediate developer looking to level up, I tailor sessions to your exact needs. We'll cover component architecture, state management, routing, API integration, performance optimization, and deployment on Vercel.</p>
+    </div>
+
+    <div class="section">
+      <h2>What You'll Learn</h2>
+      <ul class="what-list">
+        <li>Setting up and structuring a Next.js project from scratch</li>
+        <li>React hooks, context API, and state management patterns</li>
+        <li>Server-side rendering (SSR) and static site generation (SSG)</li>
+        <li>API routes and full-stack development within Next.js</li>
+        <li>Authentication with NextAuth.js</li>
+        <li>Deploying to Vercel with CI/CD best practices</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Skills & Tools</h2>
+      <div class="tags-row">
+        <span class="tag">React 18</span><span class="tag">Next.js 14</span><span class="tag">TypeScript</span>
+        <span class="tag">Tailwind CSS</span><span class="tag">REST APIs</span><span class="tag">Vercel</span>
+        <span class="tag">GitHub</span><span class="tag">Figma</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Reviews (18)</h2>
+      <div class="review-card"><div class="rev-top"><div class="rev-av" style="background:linear-gradient(135deg,#00e5a0,#7b61ff);">P</div><div class="rev-info"><h4>Priya S.</h4><p>April 2026</p></div></div><div class="rev-stars">★★★★★</div><div class="rev-body">Arjun is an excellent teacher! He helped me set up my first React project and explained every concept clearly. Within 2 sessions I had a working portfolio site. Highly recommend!</div></div>
+      <div class="review-card"><div class="rev-top"><div class="rev-av" style="background:linear-gradient(135deg,#ffd166,#ff4d6d);">M</div><div class="rev-info"><h4>Mohammed K.</h4><p>March 2026</p></div></div><div class="rev-stars">★★★★★</div><div class="rev-body">Got my e-commerce frontend built in Next.js. Amazing quality, very punctual and great communication throughout. Worth every credit!</div></div>
+      <div class="review-card"><div class="rev-top"><div class="rev-av" style="background:linear-gradient(135deg,#7b61ff,#ff4d6d);">S</div><div class="rev-info"><h4>Sneha R.</h4><p>February 2026</p></div></div><div class="rev-stars">★★★★☆</div><div class="rev-body">Very well-structured sessions. Covered SSR and API routes in just 2 hours. Would have been 5 stars but scheduling was slightly tricky. Otherwise great!</div></div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="booking-card">
+      <div class="price-row">
+        <div class="price-main">15</div>
+        <div class="price-unit">credits / hour</div>
+      </div>
+      <button class="btn btn-primary" onclick="location.href='post-skill.html'">🔄 Request Exchange</button>
+      <button class="btn btn-secondary" onclick="location.href='messages.html'">💬 Message Provider</button>
+      <ul class="feature-list">
+        <li><span>✓</span> 100% satisfaction guarantee</li>
+        <li><span>✓</span> Flexible scheduling</li>
+        <li><span>✓</span> Online or in-person (Hyderabad)</li>
+        <li><span>✓</span> Session recording available</li>
+        <li><span>✓</span> Credits refunded if cancelled 24hr+</li>
+      </ul>
+    </div>
+
+    <div class="provider-card">
+      <div class="provider-top">
+        <div class="prov-av">AR</div>
+        <div><div class="prov-name">Arjun Reddy</div><div class="prov-title">Full-Stack Developer · Hyderabad</div></div>
+      </div>
+      <div class="prov-stats">
+        <div class="prov-stat"><div class="prov-stat-num">4.9</div><div class="prov-stat-label">Rating</div></div>
+        <div class="prov-stat"><div class="prov-stat-num">38</div><div class="prov-stat-label">Sessions</div></div>
+        <div class="prov-stat"><div class="prov-stat-num">98%</div><div class="prov-stat-label">Response</div></div>
+      </div>
+      <button class="msg-btn" onclick="location.href='profile.html'">View Full Profile →</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge – Skill Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #12121a; --surface2: #1c1c28;
+    --accent: #7c6aff; --accent2: #ff6a8a; --accent3: #6affca;
+    --text: #f0eeff; --muted: #7a7a9a; --border: rgba(124,106,255,0.18);
+    --glow: 0 0 40px rgba(124,106,255,0.25);
+  }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.5; width: 100%; }
+  
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 5%;
+    background: rgba(10,10,15,0.8); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)} }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .nav-actions { display: flex; gap: 1rem; align-items: center; }
+  .btn-ghost { color: var(--muted); background: none; border: 1px solid var(--border); padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; text-decoration: none; box-shadow: 0 0 20px rgba(124,106,255,0.3); }
+  .btn-primary:hover { background: #9580ff; transform: translateY(-1px); }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 6rem 5% 2.5rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-header h1 { font-family: 'Syne', sans-serif; font-size: 2.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .page-header p { color: var(--muted); font-size: 0.95rem; }
+
+  /* SEARCH & FILTERS */
+  .search-bar-wrap {
+    padding: 1.5rem 5%;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-input-wrap { flex: 1; min-width: 260px; position: relative; }
+  .search-input-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.75rem 1rem 0.75rem 2.8rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-input-wrap input:focus { border-color: var(--accent); }
+  .search-icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1rem; }
+  .search-input-wrap input::placeholder { color: var(--muted); }
+
+  select {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 0.75rem 1rem; border-radius: 10px; font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif; outline: none; cursor: pointer;
+  }
+
+  /* CATEGORY CHIPS */
+  .category-row {
+    padding: 1rem 5%;
+    display: flex;
+    gap: 0.7rem;
+    overflow-x: auto;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+  }
+  .category-row::-webkit-scrollbar { display: none; }
+  .cat-chip {
+    white-space: nowrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.4rem 1.1rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cat-chip:hover, .cat-chip.active {
+    background: rgba(124,106,255,0.12);
+    border-color: rgba(124,106,255,0.4);
+    color: var(--accent);
+  }
+
+  /* MAIN LAYOUT */
+  .marketplace-body {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    min-height: calc(100vh - 160px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 70px;
+    height: fit-content;
+  }
+  .sidebar h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+  .filter-group { margin-bottom: 2rem; }
+  .filter-group label { display: flex; align-items: center; gap: 0.6rem; color: var(--muted); font-size: 0.88rem; cursor: pointer; margin-bottom: 0.6rem; transition: color 0.2s; }
+  .filter-group label:hover { color: var(--text); }
+  .filter-group input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+  .range-wrap { display: flex; flex-direction: column; gap: 0.5rem; }
+  .range-wrap input[type="range"] { accent-color: var(--accent); width: 100%; }
+  .range-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  /* GRID */
+  .skills-grid {
+    padding: 2rem 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.3rem;
+    align-content: start;
+  }
+
+  /* SKILL CARD */
+  .skill-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    animation: fadeUp 0.5s ease both;
+  }
+  .skill-card:hover { border-color: rgba(124,106,255,0.5); transform: translateY(-4px); box-shadow: var(--glow); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+
+  .card-banner {
+    height: 80px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.8rem;
+  }
+  .card-banner .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: white;
+    border: 3px solid var(--surface2);
+    position: absolute; bottom: -20px; left: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .online-dot {
+    position: absolute; bottom: -16px; right: 0;
+    width: 12px; height: 12px;
+    background: var(--accent3);
+    border-radius: 50%;
+    border: 2px solid var(--surface2);
+  }
+
+  .card-body { padding: 1.8rem 1.2rem 1.2rem; flex: 1; }
+  .card-name { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .card-skill { font-size: 0.82rem; color: var(--accent); font-weight: 500; margin-bottom: 0.6rem; }
+  .card-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+  .tag { background: rgba(124,106,255,0.1); border: 1px solid rgba(124,106,255,0.2); color: var(--accent); font-size: 0.73rem; padding: 0.2rem 0.6rem; border-radius: 100px; }
+  .tag.green { background: rgba(106,255,202,0.1); border-color: rgba(106,255,202,0.2); color: var(--accent3); }
+  .card-footer { border-top: 1px solid var(--border); padding: 1rem 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+  .credit-cost { display: flex; align-items: center; gap: 0.4rem; }
+  .sc { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--accent3); }
+  .sc-label { font-size: 0.75rem; color: var(--muted); }
+  .rating { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+  .rating span { color: #ffd700; }
+
+  /* REQUEST BANNER */
+  .request-banner {
+    margin: 0 2.5rem 1.5rem;
+    background: linear-gradient(135deg, rgba(124,106,255,0.15), rgba(255,106,138,0.1));
+    border: 1px solid rgba(124,106,255,0.3);
+    border-radius: 14px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .request-banner p { font-size: 0.92rem; color: var(--text); font-weight: 500; }
+  .request-banner p span { color: var(--muted); font-weight: 400; font-size: 0.85rem; display: block; margin-top: 0.2rem; }
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;} .nav-links{display:none;}
+    .page-header,.search-bar-wrap,.category-row{padding-left:1.5rem;padding-right:1.5rem;}
+    .marketplace-body{grid-template-columns:1fr;}
+    .sidebar{display:none;}
+    .skills-grid{padding:1.5rem;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));}
+    .request-banner{margin:0 1.5rem 1.5rem;flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-dot"></div>SkillBridge</a>
+  <ul class="nav-links">
+    <li><a href="marketplace.html" class="active">Marketplace</a></li>
+    <li><a href="how-it-works.html">How it Works</a></li>
+    <li><a href="community.html">Community</a></li>
+    <li><a href="about.html">About</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="login.html" class="btn-ghost">Log In</a>
+    <a href="signup.html" class="btn-primary">Get Started</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <h1>Skill Marketplace</h1>
+  <p>Discover and exchange skills with 12,400+ members in your community and beyond.</p>
+</div>
+
+<div class="search-bar-wrap">
+  <div class="search-input-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search skills, people, categories…" />
+  </div>
+  <select>
+    <option>All Locations</option>
+    <option>Nearby (10 km)</option>
+    <option>Online Only</option>
+    <option>My City</option>
+  </select>
+  <select>
+    <option>Any Credits</option>
+    <option>0–20 SC/hr</option>
+    <option>20–40 SC/hr</option>
+    <option>40+ SC/hr</option>
+  </select>
+  <select>
+    <option>Highest Rated</option>
+    <option>Newest First</option>
+    <option>Most Reviews</option>
+    <option>Lowest Credits</option>
+  </select>
+</div>
+
+<div class="category-row">
+  <div class="cat-chip active">All Skills</div>
+  <div class="cat-chip">💻 Technology</div>
+  <div class="cat-chip">🎨 Design & Art</div>
+  <div class="cat-chip">🌐 Languages</div>
+  <div class="cat-chip">🎵 Music</div>
+  <div class="cat-chip">📚 Academic</div>
+  <div class="cat-chip">🔧 Trades & Repair</div>
+  <div class="cat-chip">💪 Fitness</div>
+  <div class="cat-chip">🍳 Cooking</div>
+  <div class="cat-chip">📸 Photography</div>
+  <div class="cat-chip">✍️ Writing</div>
+  <div class="cat-chip">🎭 Performing Arts</div>
+  <div class="cat-chip">🧘 Wellness</div>
+</div>
+
+<div class="marketplace-body">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="filter-group">
+      <h3>Mode</h3>
+      <label><input type="checkbox" checked> Online Sessions</label>
+      <label><input type="checkbox" checked> In-Person</label>
+      <label><input type="checkbox"> Recorded / Async</label>
+    </div>
+    <hr class="divider">
+    <div class="filter-group">
+      <h3>Credits / Hour</h3>
+      <div class="range-wrap">
+        <input type="range" min="0" max="100" value="60">
+        <div class="range-label"><span>0 SC</span><span>60 SC</span></div>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="filter-group">
+      <h3>Rating</h3>
+      <label><input type="checkbox" checked> 4.5★ & above</label>
+      <label><input type="checkbox"> 4.0★ & above</label>
+      <label><input type="checkbox"> Any rating</label>
+    </div>
+    <hr class="divider">
+    <div class="filter-group">
+      <h3>Level</h3>
+      <label><input type="checkbox" checked> Beginner</label>
+      <label><input type="checkbox" checked> Intermediate</label>
+      <label><input type="checkbox" checked> Advanced</label>
+    </div>
+    <hr class="divider">
+    <div class="filter-group">
+      <h3>Verified Only</h3>
+      <label><input type="checkbox"> Show Verified Profiles</label>
+    </div>
+  </aside>
+
+  <!-- GRID -->
+  <main>
+    <div class="request-banner">
+      <div>
+        <p>Can't find what you need? Post a skill request!</p>
+        <p><span>Let the community come to you — members with matching skills will reach out.</span></p>
+      </div>
+      <a href="signup.html" class="btn-primary">+ Post Request</a>
+    </div>
+
+    <div class="skills-grid" id="skillsGrid">
+      <!-- Cards populated by JS -->
+    </div>
+  </main>
+</div>
+
+<script src="core.js"></script>
+<script>
+const grid = document.getElementById('skillsGrid');
+const skills = SkillBridge.getSkills();
+
+function renderSkills(filteredSkills) {
+  grid.innerHTML = '';
+  filteredSkills.forEach((s, i) => {
+    grid.innerHTML += `
+      <div class="skill-card" style="animation-delay:${i*0.06}s" onclick="location.href='skill-detail.html'">
+        <div class="card-banner" style="background:linear-gradient(135deg, var(--accent), var(--accent2))">
+          <div class="avatar" style="background:var(--accent)">${s.provider.split(' ').map(n=>n[0]).join('')}
+            <div class="online-dot"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-name">${s.provider}</div>
+          <div class="card-skill">${s.title}</div>
+          <div class="card-desc">${s.description}</div>
+          <div class="card-tags">
+            <span class="tag">${s.category}</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="credit-cost">
+            <span class="sc">${s.price}</span>
+            <span class="sc-label">SC/hr</span>
+          </div>
+          <span class="rating"><span>★</span> ${s.rating} (${s.reviews})</span>
+        </div>
+      </div>
+    `;
+  });
+}
+
+renderSkills(skills);
+
+// Category filter interaction
+document.querySelectorAll('.cat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    const category = chip.textContent.trim();
+    if (category === 'All Skills') {
+      renderSkills(skills);
+    } else {
+      renderSkills(skills.filter(s => s.category === category));
+    }
+  });
+});
+</script>
+</body>
+</html>

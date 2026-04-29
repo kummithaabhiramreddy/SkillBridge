@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge – Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0f; --surface: #12121a; --surface2: #1c1c28;
+    --accent: #7c6aff; --accent2: #ff6a8a; --accent3: #6affca;
+    --text: #f0eeff; --muted: #7a7a9a; --border: rgba(124,106,255,0.18);
+    --glow: 0 0 30px rgba(124,106,255,0.2);
+    --sidebar-w: 240px;
+  }
+  html { font-size: 15px; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; overflow-x: hidden; width: 100%; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 50;
+  }
+  .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.8rem; margin-bottom: 2rem; }
+  .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
+
+  .nav-section { margin-bottom: 1.5rem; }
+  .nav-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 0.8rem; margin-bottom: 0.5rem; }
+  .nav-item {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 10px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(124,106,255,0.12); color: var(--accent); border: 1px solid rgba(124,106,255,0.2); }
+  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+  .badge-count { margin-left: auto; background: var(--accent2); color: white; font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 100px; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 1rem 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+  .user-mini { display: flex; align-items: center; gap: 0.7rem; }
+  .user-avatar-sm { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: white; flex-shrink: 0; }
+  .user-mini-info { overflow: hidden; }
+  .user-mini-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-mini-credits { font-size: 0.75rem; color: var(--accent3); }
+
+  /* MAIN */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; }
+
+  /* TOP BAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(10,10,15,0.8); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.9rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .topbar-left h2 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+  .topbar-left p { font-size: 0.8rem; color: var(--muted); }
+  .topbar-right { display: flex; align-items: center; gap: 0.8rem; }
+  .icon-btn { width: 38px; height: 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 9px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; font-size: 1rem; }
+  .icon-btn:hover { border-color: var(--accent); }
+  .btn-primary { background: var(--accent); color: white; border: none; padding: 0.55rem 1.2rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .btn-primary:hover { background: #9580ff; }
+
+  /* CONTENT */
+  .content { padding: 2rem; flex: 1; }
+
+  /* WELCOME BANNER */
+  .welcome-banner {
+    background: linear-gradient(135deg, rgba(124,106,255,0.15), rgba(106,255,202,0.08));
+    border: 1px solid rgba(124,106,255,0.3);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.5s ease both;
+  }
+  .welcome-banner h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+  .welcome-banner p { color: var(--muted); font-size: 0.82rem; }
+  .bonus-tag { background: var(--accent3); color: #0a0a0f; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; padding: 0.4rem 1.1rem; border-radius: 100px; white-space: nowrap; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.3rem 1.5rem;
+    transition: all 0.2s;
+    animation: fadeUp 0.5s ease both;
+  }
+  .stat-card:hover { border-color: rgba(124,106,255,0.3); transform: translateY(-2px); }
+  .stat-card:nth-child(1){animation-delay:.05s} .stat-card:nth-child(2){animation-delay:.1s} .stat-card:nth-child(3){animation-delay:.15s} .stat-card:nth-child(4){animation-delay:.2s}
+  .stat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+  .stat-icon { font-size: 1.2rem; }
+  .stat-change { font-size: 0.75rem; color: var(--accent3); font-weight: 500; }
+  .stat-change.down { color: var(--accent2); }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; }
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* GRID LAYOUT */
+  .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+
+  /* CARD */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; animation: fadeUp 0.5s ease both; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.3rem; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; }
+  .see-all { font-size: 0.78rem; color: var(--accent); text-decoration: none; }
+
+  /* SESSIONS LIST */
+  .session-item { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 0; border-bottom: 1px solid var(--border); }
+  .session-item:last-child { border-bottom: none; }
+  .session-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; color: white; flex-shrink: 0; }
+  .session-info { flex: 1; }
+  .session-name { font-size: 0.9rem; font-weight: 600; }
+  .session-skill { font-size: 0.78rem; color: var(--muted); }
+  .session-time { text-align: right; }
+  .session-date { font-size: 0.8rem; color: var(--text); font-weight: 500; }
+  .session-status { font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 100px; margin-top: 2px; }
+  .status-upcoming { background: rgba(124,106,255,0.12); color: var(--accent); }
+  .status-done { background: rgba(106,255,202,0.1); color: var(--accent3); }
+  .status-pending { background: rgba(255,106,138,0.1); color: var(--accent2); }
+
+  /* CREDIT HISTORY */
+  .credit-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+  .credit-item:last-child { border-bottom: none; }
+  .credit-desc { font-size: 0.88rem; }
+  .credit-desc span { font-size: 0.76rem; color: var(--muted); display: block; }
+  .credit-amount { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; }
+  .credit-amount.plus { color: var(--accent3); }
+  .credit-amount.minus { color: var(--accent2); }
+
+  /* SKILL PROFILE */
+  .profile-card { animation-delay: 0.3s; }
+  .profile-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent2)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.8rem; color: white; margin: 0 auto 1rem; }
+  .profile-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; text-align: center; }
+  .profile-role { font-size: 0.82rem; color: var(--muted); text-align: center; margin-bottom: 1rem; }
+  .profile-credits { background: var(--surface2); border-radius: 12px; padding: 1rem; display: flex; justify-content: space-around; margin-bottom: 1.2rem; }
+  .pc-item { text-align: center; }
+  .pc-value { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; }
+  .pc-label { font-size: 0.7rem; color: var(--muted); }
+  .completion-bar { height: 6px; background: var(--surface2); border-radius: 3px; margin-bottom: 0.5rem; overflow: hidden; }
+  .completion-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent3)); width: 72%; animation: fillAnim 1.5s ease 0.5s both; }
+  @keyframes fillAnim { from{width:0}to{width:72%} }
+  .completion-label { font-size: 0.78rem; color: var(--muted); display: flex; justify-content: space-between; }
+  .my-skills-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .skill-chip { background: rgba(124,106,255,0.1); border: 1px solid rgba(124,106,255,0.2); color: var(--accent); font-size: 0.75rem; padding: 0.25rem 0.7rem; border-radius: 100px; }
+  .skill-chip.g { background: rgba(106,255,202,0.1); border-color: rgba(106,255,202,0.2); color: var(--accent3); }
+
+  /* REQUESTS */
+  .request-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1rem; margin-bottom: 0.7rem; display: flex; justify-content: space-between; align-items: center; }
+  .request-item:last-child { margin-bottom: 0; }
+  .request-info h4 { font-size: 0.88rem; font-weight: 600; }
+  .request-info p { font-size: 0.75rem; color: var(--muted); }
+  .respond-btn { background: var(--accent); color: white; border: none; padding: 0.4rem 0.9rem; border-radius: 7px; font-size: 0.78rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; }
+
+  @media(max-width:1024px){ .stats-grid{grid-template-columns:repeat(2,1fr);} .dashboard-grid{grid-template-columns:1fr;} }
+  @media(max-width:768px){ .sidebar{display:none;} .main{margin-left:0;} .content{padding:1rem;} .stats-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <a href="index.html" class="logo"><div class="logo-dot"></div>SkillBridge</a>
+  <div class="nav-section">
+    <div class="nav-label">Main</div>
+    <a href="dashboard.html" class="nav-item active"><span class="nav-icon">⊞</span> Dashboard</a>
+    <a href="marketplace.html" class="nav-item"><span class="nav-icon">🔍</span> Marketplace</a>
+    <a href="messages.html" class="nav-item"><span class="nav-icon">💬</span> Messages <span class="badge-count">3</span></a>
+    <a href="marketplace.html" class="nav-item"><span class="nav-icon">📅</span> Sessions</a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span> Requests <span class="badge-count">2</span></a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">My Skills</div>
+    <button class="nav-item"><span class="nav-icon">📋</span> My Listings</button>
+    <a href="credits.html" class="nav-item"><span class="nav-icon">💰</span> Credit Wallet</a>
+    <button class="nav-item"><span class="nav-icon">⭐</span> Reviews</button>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Community</div>
+    <a href="community.html" class="nav-item"><span class="nav-icon">🌐</span> Community</a>
+    <button class="nav-item"><span class="nav-icon">🏆</span> Leaderboard</button>
+  </div>
+  <div class="sidebar-footer">
+    <a href="profile.html" class="user-mini">
+      <div class="user-avatar-sm">A</div>
+      <div class="user-mini-info">
+        <div class="user-mini-name">Arjun Dev</div>
+        <div class="user-mini-credits">340 SC balance</div>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2>Good morning, Arjun 👋</h2>
+      <p>Wednesday, June 11 · Hyderabad, India</p>
+    </div>
+    <div class="topbar-right">
+      <a href="notifications.html" class="icon-btn">🔔</a>
+      <div class="icon-btn">⚙️</div>
+      <a href="post-skill.html" class="btn-primary">+ List a Skill</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- WELCOME -->
+    <div class="welcome-banner">
+      <div>
+        <h3>🎉 Welcome to SkillBridge!</h3>
+        <p>Your account is set up. Start by completing your profile or browsing the marketplace.</p>
+      </div>
+      <div class="bonus-tag">50 SC Bonus!</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon">💰</span><span class="stat-change">+50 today</span></div>
+        <div class="stat-value" style="color:var(--accent3)">340</div>
+        <div class="stat-label">SkillCredits Balance</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon">🔄</span><span class="stat-change">+2 this week</span></div>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Total Exchanges</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon">⭐</span><span class="stat-change">New</span></div>
+        <div class="stat-value">4.8</div>
+        <div class="stat-label">Avg. Rating</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon">👥</span><span class="stat-change">+3 this month</span></div>
+        <div class="stat-value">11</div>
+        <div class="stat-label">Connections</div>
+      </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="dashboard-grid">
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+        <!-- UPCOMING SESSIONS -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📅 Sessions</span>
+            <a href="marketplace.html" class="see-all">See All</a>
+          </div>
+          <div class="session-item">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#7c6aff,#ff6a8a)">R</div>
+            <div class="session-info">
+              <div class="session-name">Riya Kapoor</div>
+              <div class="session-skill">Python Basics — Intro to Pandas</div>
+            </div>
+            <div class="session-time">
+              <div class="session-date">Tomorrow 4 PM</div>
+              <div class="session-status status-upcoming">Upcoming</div>
+            </div>
+          </div>
+          <div class="session-item">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#6affca,#7c6aff)">M</div>
+            <div class="session-info">
+              <div class="session-name">Mohan Rao</div>
+              <div class="session-skill">Carnatic Vocals — Lesson 3</div>
+            </div>
+            <div class="session-time">
+              <div class="session-date">Fri, 6 PM</div>
+              <div class="session-status status-upcoming">Upcoming</div>
+            </div>
+          </div>
+          <div class="session-item">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#ff6a8a,#ff9a6a)">P</div>
+            <div class="session-info">
+              <div class="session-name">Priya Sharma</div>
+              <div class="session-skill">UI Design Review — Portfolio Crit</div>
+            </div>
+            <div class="session-time">
+              <div class="session-date">Jun 9, Done</div>
+              <div class="session-status status-done">Completed</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INCOMING REQUESTS -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔔 Skill Requests</span>
+            <a href="notifications.html" class="see-all">See All</a>
+          </div>
+          <div class="request-item">
+            <div class="request-info">
+              <h4>Ananya needs: Figma Basics</h4>
+              <p>Offering 25 SC/hr · Online · This weekend</p>
+            </div>
+            <button class="respond-btn">Respond</button>
+          </div>
+          <div class="request-item">
+            <div class="request-info">
+              <h4>Dev needs: React Hooks</h4>
+              <p>Offering 35 SC/hr · Online · Flexible timing</p>
+            </div>
+            <button class="respond-btn">Respond</button>
+          </div>
+        </div>
+
+        <!-- CREDIT HISTORY -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">💰 Credit History</span>
+            <a href="credits.html" class="see-all">Full History</a>
+          </div>
+          <div class="credit-item">
+            <div class="credit-desc">Signup Bonus <span>Account created</span></div>
+            <div class="credit-amount plus">+50 SC</div>
+          </div>
+          <div class="credit-item">
+            <div class="credit-desc">UI Design Session with Priya <span>Jun 9, 2025</span></div>
+            <div class="credit-amount plus">+60 SC</div>
+          </div>
+          <div class="credit-item">
+            <div class="credit-desc">Python Session with Riya <span>Jun 6, 2025</span></div>
+            <div class="credit-amount minus">-30 SC</div>
+          </div>
+          <div class="credit-item">
+            <div class="credit-desc">Referral Bonus — Karthik Joined <span>Jun 4, 2025</span></div>
+            <div class="credit-amount plus">+20 SC</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex;flex-direction:column;gap:1.5rem;">
+        <!-- PROFILE CARD -->
+        <a href="profile.html" class="card profile-card" style="text-decoration:none;color:inherit;">
+          <div class="profile-avatar">A</div>
+          <div class="profile-name">Arjun Dev</div>
+          <div class="profile-role">UI/UX Designer · Hyderabad</div>
+          <div class="profile-credits">
+            <div class="pc-item"><div class="pc-value" style="color:var(--accent3)">340</div><div class="pc-label">Credits</div></div>
+            <div class="pc-item"><div class="pc-value">4</div><div class="pc-label">Sessions</div></div>
+            <div class="pc-item"><div class="pc-value">4.8★</div><div class="pc-label">Rating</div></div>
+          </div>
+          <div class="completion-label"><span>Profile Completeness</span><span>72%</span></div>
+          <div class="completion-bar"><div class="completion-fill"></div></div>
+          <div style="font-size:0.75rem;color:var(--muted);margin-top:0.4rem">Add portfolio + 2 more skills to reach 100%</div>
+          <div class="my-skills-list">
+            <span class="skill-chip">🎨 UI Design</span>
+            <span class="skill-chip">⚛️ React</span>
+            <span class="skill-chip g">🎸 Guitar</span>
+            <span class="skill-chip">📐 Figma</span>
+          </div>
+        </a>
+
+        <!-- DISCOVER -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">✨ Suggested For You</span>
+          </div>
+          <div class="session-item" style="padding:0.7rem 0">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#7c6aff,#6affca);width:36px;height:36px;font-size:0.85rem">K</div>
+            <div class="session-info">
+              <div class="session-name" style="font-size:0.85rem">Karthik — Next.js</div>
+              <div class="session-skill">40 SC/hr · ⭐ 4.8</div>
+            </div>
+            <button style="background:rgba(124,106,255,0.12);color:var(--accent);border:1px solid rgba(124,106,255,0.25);padding:0.3rem 0.7rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;">View</button>
+          </div>
+          <div class="session-item" style="padding:0.7rem 0">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#ff6a8a,#ff9a6a);width:36px;height:36px;font-size:0.85rem">F</div>
+            <div class="session-info">
+              <div class="session-name" style="font-size:0.85rem">Fatima — French</div>
+              <div class="session-skill">22 SC/hr · ⭐ 4.6</div>
+            </div>
+            <button style="background:rgba(124,106,255,0.12);color:var(--accent);border:1px solid rgba(124,106,255,0.25);padding:0.3rem 0.7rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;">View</button>
+          </div>
+          <div class="session-item" style="padding:0.7rem 0;border:none">
+            <div class="session-avatar" style="background:linear-gradient(135deg,#6affca,#6aaeff);width:36px;height:36px;font-size:0.85rem">S</div>
+            <div class="session-info">
+              <div class="session-name" style="font-size:0.85rem">Sahil — Guitar</div>
+              <div class="session-skill">18 SC/hr · ⭐ 4.9</div>
+            </div>
+            <button style="background:rgba(124,106,255,0.12);color:var(--accent);border:1px solid rgba(124,106,255,0.25);padding:0.3rem 0.7rem;border-radius:7px;font-size:0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif;">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="core.js"></script>
+<script>
+  if (!SkillBridge.isLoggedIn()) {
+    window.location.href = 'login.html';
+  }
+
+  const user = SkillBridge.getCurrentUser();
+  if (user) {
+    // Update Welcome
+    document.querySelector('.welcome-banner h3').textContent = `Good afternoon, ${user.name} 👋`;
+    
+    // Update Credits
+    document.querySelectorAll('.stat-value')[0].textContent = user.credits;
+    
+    // Update User Info in Sidebar
+    const sidebarProfile = document.querySelector('.sidebar-profile');
+    if (sidebarProfile) {
+      sidebarProfile.querySelector('.prof-name').textContent = user.name;
+      sidebarProfile.querySelector('.prof-role').textContent = user.email;
+      sidebarProfile.querySelector('.prof-avatar').textContent = user.avatar || user.name[0].toUpperCase();
+    }
+  }
+</script>
+</body>
+</html>
