@@ -63,9 +63,8 @@ const SkillBridge = {
       let provider;
       if (providerName === 'Google') {
         provider = new firebase.auth.GoogleAuthProvider();
-      } else if (providerName === 'LinkedIn') {
-        // Note: LinkedIn via Firebase requires custom setup in Firebase console
-        provider = new firebase.auth.OAuthProvider('linkedin.com');
+      } else if (providerName === 'GitHub') {
+        provider = new firebase.auth.GithubAuthProvider();
       }
 
       const result = await firebase.auth().signInWithPopup(provider);
